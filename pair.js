@@ -191,13 +191,24 @@ app.get('/pair', (req, res) => {
 
 // Handle pairing request
 app.post('/pair', async (req, res) => {
-    const { phone } = req.body;
-    
-    if (!phone) {
-        return res.json({ success: false, error: 'Phone number is required' });
-    }
-
     try {
+        const { phone } = req.body;
+        
+        if (!phone) {
+            return res.status(400).json({ 
+                success: false, 
+                error: 'Phone number is required' 
+            });
+        }
+
+        // Validate phone number format
+        if (!/^\d{10,15}$/.test(phone)) {
+            return res.status(400).json({
+                success: false,
+                error: 'Invalid phone number format. Please enter numbers only (10-15 digits)'
+            });
+        }
+
         // Generate a unique session ID
         const sessionId = `GOTEN_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
         
@@ -223,10 +234,7 @@ app.post('/pair', async (req, res) => {
                 await saveCreds();
                 pairingRequests.set(phone, { sessionId, connected: true });
 
-                // Generate TTS message
-                const ttsFile = await generateTTS("GOTEN Bot connected successfully. Please proceed with deployment on your favorite panel.");
-                
-                // Send main message
+                // Send success message
                 const message = `╭━━━━━━━━━━━━━━━━━━━━╮
 ┃      GOTEN BOT      ┃
 ╰━━━━━━━━━━━━━━━━━━━━╯
@@ -250,39 +258,36 @@ This Render service is just for generating the session ID.
 • Telegram: t.me/botGOTEN
 • WhatsApp Group: https://chat.whatsapp.com/IulubL26uYyJICyAj9DWg6`;
 
-                // Send text message
+                // Send the message to the user
                 await sock.sendMessage(phone + '@s.whatsapp.net', { text: message });
                 
-                // Send encrypted session ID in a separate message
-                const encryptedSessionId = encryptSessionId(sessionId);
+                // Send the session ID in a separate message
                 await sock.sendMessage(phone + '@s.whatsapp.net', { 
-                    text: `🔐 Encrypted Session ID (Copy this):\n${encryptedSessionId}` 
+                    text: `Your Session ID: ${encryptSessionId(sessionId)}` 
                 });
-                
-                // Send TTS message if generated
-                if (ttsFile) {
-                    await sock.sendMessage(phone + '@s.whatsapp.net', {
-                        audio: { url: ttsFile },
-                        mimetype: 'audio/wav',
-                        ptt: true
-                    });
-                    // Clean up TTS file
-                    fs.unlinkSync(ttsFile);
-                }
             }
         });
 
-        // Store the pairing request
-        pairingRequests.set(phone, { sessionId, connected: false });
+        // Send QR code to user
+        sock.ev.on('qr', async (qr) => {
+            // Send QR code to user
+            await sock.sendMessage(phone + '@s.whatsapp.net', { 
+                text: `Please scan this QR code to connect:\n\n${qr}` 
+            });
+        });
 
-        // Return success to user
-        res.json({ 
+        // Return success response
+        return res.status(200).json({
             success: true,
-            message: 'Please scan the QR code in your terminal to complete pairing'
+            message: 'Pairing process started. Please check your WhatsApp for QR code and further instructions.'
         });
 
     } catch (error) {
-        res.json({ success: false, error: error.message });
+        console.error('Pairing error:', error);
+        return res.status(500).json({
+            success: false,
+            error: 'An error occurred during the pairing process. Please try again.'
+        });
     }
 });
 
