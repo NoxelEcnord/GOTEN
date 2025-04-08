@@ -4,13 +4,19 @@
   "description": "WhatsApp Bot by Derrick (ecnord noxel)",
   "main": "body.js",
   "type": "commonjs",
+  "engines": {
+    "node": ">=16.0.0"
+  },
   "scripts": {
     "start": "node body.js",
     "dev": "nodemon body.js",
     "normal": "pm2 start body.js --name goten --attach --max-memory-restart 490M",
     "test": "echo \"Error: no test specified\" && exit 1",
     "c": "tsc",
-    "pair": "node pair.js"
+    "pair": "node pair.js",
+    "pairing": "node pair.js",
+    "build": "mkdir -p temp sessions",
+    "start-web": "node pair.js"
   },
   "keywords": [
     "bot",
@@ -48,6 +54,7 @@
     "cfonts": "^3.2.0",
     "chalk": "^5.3.0",
     "chess.js": "^1.0.0",
+    "cors": "^2.8.5",
     "paroles": "^2.3.0",
     "cheerio": "^1.0.0-rc.12",
     "colors": "^1.4.0",
@@ -137,6 +144,6 @@
     "youtube-yts": "^2.0.0",
     "yt-search": "^2.10.4",
     "youtube-dl-exec": "^2.4.17",
-    "gtts-cli": "^1.0.0"
+    "say": "^0.16.0"
   }
 }
