@@ -115,6 +115,24 @@
             background-color: #f8d7da;
             color: #721c24;
         }
+        .audio-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+        #play-audio {
+            display: none;
+            margin: 10px auto;
+            padding: 10px 20px;
+            background-color: #25D366;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        #play-audio:hover {
+            background-color: #128C7E;
+        }
     </style>
 </head>
 <body>
@@ -122,8 +140,10 @@
         <img src="/assets/logos/goten_logo.jpg" alt="GOTEN Bot Logo" class="header-logo">
         <h1>🐉 GOTEN Bot</h1>
         <p>A powerful WhatsApp AI assistant with Kenyan Sheng mode and more</p>
-        <!-- Autoplay audio with introduction -->
-        <audio id="welcome-audio" src="/assets/sounds/introduction.mp3" preload="auto"></audio>
+        <div class="audio-container">
+            <audio id="welcome-audio" src="/assets/sounds/introduction.mp3" preload="auto"></audio>
+            <button id="play-audio" class="cta-button">🔊 Play Introduction</button>
+        </div>
     </header>
 
     <div class="container">
@@ -256,18 +276,29 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const welcomeAudio = document.getElementById('welcome-audio');
-            const playButton = document.createElement('button');
-            playButton.textContent = '🔊 Play Introduction';
-            playButton.className = 'cta-button';
-            playButton.style.marginTop = '10px';
-            playButton.onclick = () => welcomeAudio.play();
-            document.querySelector('header').appendChild(playButton);
+            const audio = document.getElementById('welcome-audio');
+            const playButton = document.getElementById('play-audio');
+            
+            // Try autoplay first
+            const playPromise = audio.play();
+            
+            if (playPromise !== undefined) {
+                playPromise.catch(function(error) {
+                    console.log("Autoplay prevented:", error);
+                    // Show play button if autoplay fails
+                    playButton.style.display = 'inline-block';
+                });
+            }
 
-            // Try autoplay with user interaction
-            document.body.addEventListener('click', function() {
-                welcomeAudio.play().catch(() => {});
-            }, { once: true });
+            playButton.addEventListener('click', function() {
+                audio.play();
+                playButton.style.display = 'none';
+            });
+
+            audio.addEventListener('ended', function() {
+                playButton.style.display = 'inline-block';
+                playButton.textContent = '🔄 Replay Introduction';
+            });
         });
 
         // Show/Hide functions

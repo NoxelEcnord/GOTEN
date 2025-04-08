@@ -1,24 +1,24 @@
 const config = require('../config.env');
 
 // Available Goten images for menus
-const menuImages = [
-    'https://goten-bot.onrender.com/assets/images/goten_standing.jpg',
-    'https://goten-bot.onrender.com/assets/images/goten_happy_jumping.jpg',
-    'https://goten-bot.onrender.com/assets/images/goten_flying_happy.jpg',
-    'https://goten-bot.onrender.com/assets/images/goten_arms_up.jpg',
-    'https://goten-bot.onrender.com/assets/images/goten_adult_light.jpg',
-    'https://goten-bot.onrender.com/assets/images/goten_neon.jpg',
-    'https://goten-bot.onrender.com/assets/images/goten_happy_blushing_pause.jpg',
-    'https://goten-bot.onrender.com/assets/images/goten_and_trunks_ssj1_back_on_back_cheers.jpg',
-    'https://goten-bot.onrender.com/assets/images/goten_ssj1_bruised_sad.jpg',
-    'https://goten-bot.onrender.com/assets/images/goten_wasted_ssj3_angry_bruised.jpg',
-    'https://goten-bot.onrender.com/assets/images/goten_ss_god_red_holding spirit bomb_looking curius.jpg',
-    'https://goten-bot.onrender.com/assets/images/goten_x_trunks_ssj1_playing.jpg'
+const GOTEN_IMAGES = [
+    'https://gotens.onrender.com/assets/images/goten_standing.jpg',
+    'https://gotens.onrender.com/assets/images/goten_happy_jumping.jpg',
+    'https://gotens.onrender.com/assets/images/goten_flying_happy.jpg',
+    'https://gotens.onrender.com/assets/images/goten_arms_up.jpg',
+    'https://gotens.onrender.com/assets/images/goten_adult_light.jpg',
+    'https://gotens.onrender.com/assets/images/goten_neon.jpg',
+    'https://gotens.onrender.com/assets/images/goten_happy_blushing_pause.jpg',
+    'https://gotens.onrender.com/assets/images/goten_and_trunks_ssj1_back_on_back_cheers.jpg',
+    'https://gotens.onrender.com/assets/images/goten_ssj1_bruised_sad.jpg',
+    'https://gotens.onrender.com/assets/images/goten_wasted_ssj3_angry_bruised.jpg',
+    'https://gotens.onrender.com/assets/images/goten_ss_god_red_holding_spirit_bomb_looking_curius.jpg',
+    'https://gotens.onrender.com/assets/images/goten_x_trunks_ssj1_playing.jpg'
 ];
 
 // Function to get random menu image
 function getRandomMenuImage() {
-    return menuImages[Math.floor(Math.random() * menuImages.length)];
+    return GOTEN_IMAGES[Math.floor(Math.random() * GOTEN_IMAGES.length)];
 }
 
 // Menu formats with modern ASCII art

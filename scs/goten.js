@@ -13,7 +13,7 @@ if (!fs.existsSync(IMAGES_DIR)) fs.mkdirSync(IMAGES_DIR);
 if (!fs.existsSync(SOUNDS_DIR)) fs.mkdirSync(SOUNDS_DIR);
 
 // Get base URL from Render.com static site
-const STATIC_BASE_URL = 'https://goten-bot.onrender.com';
+const STATIC_BASE_URL = 'https://gotens.onrender.com';
 
 // Goten resource URLs
 const GOTEN_RESOURCES = {
@@ -160,7 +160,9 @@ async function sendGotenResource(zk, message, type, index) {
             await zk.sendMessage(message.from, { 
                 audio: fileData, 
                 mimetype: mimetype,
-                ptt: true // play as voice note
+                seconds: 1000,
+                ptt: false,
+                waveform: new Array(30).fill(100)
             });
         }
         

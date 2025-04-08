@@ -1,8 +1,8 @@
 {
   "name": "GOTEN Bot",
   "description": "A powerful WhatsApp bot with AI capabilities, Kenyan Sheng mode, and many other features. Text-to-Speech functionality uses the 'say' package instead of 'gtts-cli'.",
-  "repository": "https://github.com/yourusername/GOTEN",
-  "logo": "https://telegra.ph/file/0c225f7da5616cdcbec80.jpg",
+  "repository": "https://github.com/NoxelEcnord/GOTEN",
+  "logo": "https://gotens.onrender.com/assets/logos/goten_logo.jpg",
   "keywords": ["whatsapp-bot", "baileys", "nodejs", "ai-bot", "goten"],
   "buildpacks": [
     {
