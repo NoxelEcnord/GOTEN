@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Allow: /render-session
+Allow: /pair
+Disallow: /health
+Disallow: /check-render-pairing-status
+Disallow: /render-pair 

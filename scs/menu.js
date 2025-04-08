@@ -1,5 +1,26 @@
 const config = require('../config.env');
 
+// Available Goten images for menus
+const menuImages = [
+    'https://goten-bot.onrender.com/assets/images/goten_standing.jpg',
+    'https://goten-bot.onrender.com/assets/images/goten_happy_jumping.jpg',
+    'https://goten-bot.onrender.com/assets/images/goten_flying_happy.jpg',
+    'https://goten-bot.onrender.com/assets/images/goten_arms_up.jpg',
+    'https://goten-bot.onrender.com/assets/images/goten_adult_light.jpg',
+    'https://goten-bot.onrender.com/assets/images/goten_neon.jpg',
+    'https://goten-bot.onrender.com/assets/images/goten_happy_blushing_pause.jpg',
+    'https://goten-bot.onrender.com/assets/images/goten_and_trunks_ssj1_back_on_back_cheers.jpg',
+    'https://goten-bot.onrender.com/assets/images/goten_ssj1_bruised_sad.jpg',
+    'https://goten-bot.onrender.com/assets/images/goten_wasted_ssj3_angry_bruised.jpg',
+    'https://goten-bot.onrender.com/assets/images/goten_ss_god_red_holding spirit bomb_looking curius.jpg',
+    'https://goten-bot.onrender.com/assets/images/goten_x_trunks_ssj1_playing.jpg'
+];
+
+// Function to get random menu image
+function getRandomMenuImage() {
+    return menuImages[Math.floor(Math.random() * menuImages.length)];
+}
+
 // Menu formats with modern ASCII art
 const menuFormats = [
     {
@@ -274,23 +295,23 @@ const categories = [
     }
 ];
 
-// Get a random menu format
+// Get random menu
 function getRandomMenu() {
-    const randomIndex = Math.floor(Math.random() * menuFormats.length);
-    return menuFormats[randomIndex];
+    const menu = menuFormats[Math.floor(Math.random() * menuFormats.length)];
+    return { ...menu, image: getRandomMenuImage() };
 }
 
-// Format the menu with categories
-function formatMenu(format) {
-    let menu = `${format.title}\n${format.header}\n\n`;
+// Format menu with categories and commands
+function formatMenu(menu) {
+    let formattedMenu = `${menu.title}\n${menu.header}\n\n`;
     
     // Add categories and commands
     categories.forEach(category => {
-        menu += `${category.name}\n`;
+        formattedMenu += `${category.name}\n`;
         category.commands.forEach(cmd => {
-            menu += `${cmd.index}. .${cmd.cmd} - ${cmd.desc}\n`;
+            formattedMenu += `${cmd.index}. .${cmd.cmd} - ${cmd.desc}\n`;
         });
-        menu += '\n';
+        formattedMenu += '\n';
     });
     
     // Add footer with current time
@@ -301,11 +322,11 @@ function formatMenu(format) {
         hour12: true 
     });
     
-    menu += `${format.footer}\n`;
-    menu += `Current Time: ${timeString}\n`;
-    menu += `Type a number or .help for more info\n`;
+    formattedMenu += `${menu.footer}\n`;
+    formattedMenu += `Current Time: ${timeString}\n`;
+    formattedMenu += `Type a number or .help for more info\n`;
     
-    return menu;
+    return formattedMenu;
 }
 
 // Get command by index
@@ -324,6 +345,7 @@ module.exports = {
     getRandomMenu,
     formatMenu,
     getCommandByIndex,
+    getRandomMenuImage,
     categories
 };
 

@@ -1,7 +1,7 @@
 const config = require('../config.env');
 const fs = require('fs');
 const path = require('path');
-const { getRandomMenu, formatMenu, getCommandByIndex } = require('./menu');
+const { getRandomMenu, formatMenu, getCommandByIndex, getRandomMenuImage } = require('./menu');
 const { generateShengResponse } = require('./sheng');
 
 // Command registry
@@ -45,7 +45,19 @@ async function handleCommand(message, zk, options) {
     // Handle menu command
     if (text === 'menu' || text === 'help' || text === '?') {
         const menu = getRandomMenu();
-        await repondre(formatMenu(menu));
+        const menuImage = menu.image; // Get the random image from the menu object
+        
+        try {
+            // Send menu with image
+            await zk.sendMessage(message.key.remoteJid, {
+                image: { url: menuImage },
+                caption: formatMenu(menu)
+            }, { quoted: message });
+        } catch (error) {
+            console.error('Error sending menu with image:', error);
+            // Fallback to text-only menu if image fails
+            await repondre(formatMenu(menu));
+        }
         return true;
     }
     
