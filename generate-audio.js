@@ -50,6 +50,11 @@ const audioScripts = [
     { 
         filename: 'aimode.mp3',
         text: "AI mode enabled. Goten Bot is now using advanced artificial intelligence to answer your queries. How may I assist you?"
+    },
+    {
+        filename: 'introduction.mp3',
+        text: "Welcome to Goten Bot! Named after the powerful character from Dragon Ball Z, I'm your ultimate WhatsApp assistant designed to make your messaging experience more fun and productive. My features include AI chat powered by OpenAI and Google Gemini, media downloads from platforms like YouTube and TikTok, interactive games, utility tools, and group management. I even have a special Kenyan Sheng mode for localized conversations! To get started, you'll need to generate a session ID from this website and deploy me using the instructions provided. I'm constantly improving thanks to my developer NoxelEcnord. If you enjoy using me, please consider starring the GitHub repository. Now, let's power up your WhatsApp experience together!",
+        isLong: true
     }
 ];
 
@@ -70,6 +75,46 @@ function downloadFile(url, destination) {
     });
 }
 
+// Function to merge audio chunks
+async function mergeAudioChunks(urls, outputFile) {
+    // Create temp directory if it doesn't exist
+    const tempDir = path.join(__dirname, 'temp');
+    if (!fs.existsSync(tempDir)) {
+        fs.mkdirSync(tempDir, { recursive: true });
+    }
+    
+    try {
+        // Download all chunks
+        const chunkFiles = [];
+        for (let i = 0; i < urls.length; i++) {
+            const chunkFile = path.join(tempDir, `chunk_${i}.mp3`);
+            await downloadFile(urls[i], chunkFile);
+            chunkFiles.push(chunkFile);
+        }
+        
+        // Concatenate all chunks using Node.js streams
+        const writeStream = fs.createWriteStream(outputFile);
+        
+        for (let i = 0; i < chunkFiles.length; i++) {
+            const chunkContent = fs.readFileSync(chunkFiles[i]);
+            writeStream.write(chunkContent);
+        }
+        
+        writeStream.end();
+        
+        return new Promise((resolve, reject) => {
+            writeStream.on('finish', () => {
+                // Clean up temp files
+                chunkFiles.forEach(file => fs.unlinkSync(file));
+                resolve();
+            });
+            writeStream.on('error', reject);
+        });
+    } catch (error) {
+        throw error;
+    }
+}
+
 // Generate audio files sequentially
 async function generateAudioFiles() {
     console.log('Starting TTS generation for Goten Bot audio files...');
@@ -81,16 +126,29 @@ async function generateAudioFiles() {
         console.log(`Generating ${script.filename}...`);
         
         try {
-            // Get TTS URL from Google
-            const url = googleTTS.getAudioUrl(script.text, {
-                lang: 'en',
-                slow: false,
-                host: 'https://translate.google.com',
-            });
-            
-            // Download the audio file
-            await downloadFile(url, outputFile);
-            console.log(`Successfully generated ${script.filename}`);
+            if (script.isLong) {
+                // Handle long text with getAllAudioUrls
+                const urls = await googleTTS.getAllAudioUrls(script.text, {
+                    lang: 'en',
+                    slow: false,
+                    host: 'https://translate.google.com',
+                });
+                
+                // Merge all audio chunks
+                await mergeAudioChunks(urls.map(item => item.url), outputFile);
+                console.log(`Successfully generated ${script.filename} (long text)`);
+            } else {
+                // Regular short text handling
+                const url = googleTTS.getAudioUrl(script.text, {
+                    lang: 'en',
+                    slow: false,
+                    host: 'https://translate.google.com',
+                });
+                
+                // Download the audio file
+                await downloadFile(url, outputFile);
+                console.log(`Successfully generated ${script.filename}`);
+            }
         } catch (error) {
             console.error(`Error generating ${script.filename}:`, error);
         }

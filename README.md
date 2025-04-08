@@ -25,8 +25,8 @@ A powerful WhatsApp bot with AI capabilities, media handling, games, and Goten-t
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/goten-bot.git
-cd goten-bot
+git clone https://github.com/NoxelEcnord/GOTEN.git
+cd GOTEN
 ```
 
 2. Install dependencies:
@@ -55,7 +55,7 @@ npm run goten
 
 Click the button below to deploy to Heroku:
 
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/yourusername/GOTEN)
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/NoxelEcnord/GOTEN)
 
 ### Manual Deployment
 
@@ -110,7 +110,7 @@ heroku ps:scale web=1
 
 Before deploying to Heroku, you need to generate and encrypt a session ID:
 
-1. Follow the instructions in [GOTEN_SESSION_GENERATOR.md](GOTEN_SESSION_GENERATOR.md)
+1. Visit the [GOTEN Bot website](https://static-goten.onrender.com/) to generate your session ID
 2. Use the encrypted session ID when deploying
 
 ## 🤖 Bot Commands
@@ -189,11 +189,17 @@ GEMINI_API_KEY="your-gemini-key"
 - Developer: Derrick (ecnord noxel)
 - WhatsApp: +254726498682
 
+## ⭐ Support the Project
+
+If you find GOTEN Bot useful, please consider:
+- Starring the [GitHub repository](https://github.com/NoxelEcnord/GOTEN)
+- Forking the project to contribute
+- Sharing with friends
+
 ## 📝 License
 
 This project is licensed under the MIT License.
 
 ## 🙏 Credits
 
-- Original concept by Bera Tech Bot
-- Modified and enhanced by Derrick (ecnord noxel) 
+- Created and developed by Derrick (ecnord noxel) 

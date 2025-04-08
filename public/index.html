@@ -9,20 +9,200 @@
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#25D366">
     <meta name="description" content="GOTEN Bot - A powerful WhatsApp AI assistant with Kenyan Sheng mode, media commands, and more features.">
+    <style>
+        .session-container {
+            display: none;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .back-btn {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #075E54;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .back-btn:hover {
+            text-decoration: underline;
+        }
+        .container input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .loading {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #25D366;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 2s linear infinite;
+            margin: 0 auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .session-box, .pairing-code {
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 15px 0;
+            word-break: break-all;
+            font-family: monospace;
+            font-size: 20px;
+            text-align: center;
+            letter-spacing: 3px;
+        }
+        .copy-btn {
+            background-color: #6c757d;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+        .steps {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .steps h3 {
+            margin-top: 0;
+            color: #075E54;
+        }
+        .step {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed #ddd;
+        }
+        .step:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        .step-num {
+            display: inline-block;
+            background-color: #25D366;
+            color: white;
+            width: 24px;
+            height: 24px;
+            text-align: center;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        .hidden {
+            display: none;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
 </head>
 <body>
     <header>
         <img src="/assets/logos/goten_logo.jpg" alt="GOTEN Bot Logo" class="header-logo">
         <h1>🐉 GOTEN Bot</h1>
         <p>A powerful WhatsApp AI assistant with Kenyan Sheng mode and more</p>
+        <!-- Autoplay audio with introduction -->
+        <audio id="welcome-audio" src="/assets/sounds/introduction.mp3" preload="auto"></audio>
     </header>
 
     <div class="container">
         <div class="card">
             <h2>Generate Your Session ID</h2>
             <p>To get started with GOTEN Bot, you'll need to generate a session ID that connects the bot to your WhatsApp account.</p>
-            <a href="/render-session" class="cta-button">Generate Session ID</a>
-            <a href="/pair" class="cta-button">Legacy Pairing</a>
+            <button class="cta-button" id="show-session-generator">Generate Session ID</button>
+            <button class="cta-button" id="show-legacy-pairing">Legacy Pairing</button>
+        </div>
+
+        <!-- Session Generator Container -->
+        <div id="session-generator" class="session-container">
+            <span class="back-btn" onclick="hideSessionGenerator()">&larr; Back to Main Menu</span>
+            <h2>GOTEN Bot Session Generator</h2>
+            <div class="steps">
+                <h3>How This Works</h3>
+                <div class="step">
+                    <span class="step-num">1</span> Enter your WhatsApp phone number (with country code)
+                </div>
+                <div class="step">
+                    <span class="step-num">2</span> You'll receive a pairing code to link with WhatsApp
+                </div>
+                <div class="step">
+                    <span class="step-num">3</span> Once paired, you'll receive a session ID on your WhatsApp
+                </div>
+                <div class="step">
+                    <span class="step-num">4</span> Use this session ID for your Heroku deployment
+                </div>
+            </div>
+            
+            <div id="pairing-form-container">
+                <form id="pairingForm">
+                    <input type="text" id="phone" placeholder="Your WhatsApp number (with country code, e.g., 1234567890)" required>
+                    <button type="submit" class="cta-button">Generate Pairing Code</button>
+                </form>
+                <div id="pairing-result"></div>
+            </div>
+            
+            <div id="pair-code-container" class="hidden">
+                <h3>WhatsApp Pairing Code</h3>
+                <p>Open WhatsApp on your phone, go to Settings > Linked Devices > Link a Device, and enter this code:</p>
+                <div class="pairing-code" id="pairing-code"></div>
+                <button class="copy-btn" onclick="copyToClipboard('pairing-code')">Copy Code</button>
+                <div id="pairing-status" class="loading">
+                    <p>Waiting for you to enter the code in WhatsApp...</p>
+                    <div class="loading-spinner"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Legacy Pairing Container -->
+        <div id="legacy-pairing" class="session-container">
+            <span class="back-btn" onclick="hideLegacyPairing()">&larr; Back to Main Menu</span>
+            <h2>GOTEN Bot Legacy Pairing</h2>
+            <div class="steps">
+                <h3>How This Works</h3>
+                <div class="step">
+                    <span class="step-num">1</span> Click the "Generate QR Code" button below
+                </div>
+                <div class="step">
+                    <span class="step-num">2</span> Scan the QR code with WhatsApp on your phone
+                </div>
+                <div class="step">
+                    <span class="step-num">3</span> Once scanned, you'll receive a session ID
+                </div>
+                <div class="step">
+                    <span class="step-num">4</span> Use this session ID for your Heroku deployment
+                </div>
+            </div>
+            
+            <button class="cta-button" id="generate-qr">Generate QR Code</button>
+            
+            <div id="qr-container" class="hidden">
+                <div id="qr-code"></div>
+                <div id="qr-status" class="loading">
+                    <p>Waiting for you to scan the QR code with WhatsApp...</p>
+                    <div class="loading-spinner"></div>
+                </div>
+            </div>
         </div>
 
         <h2>Features</h2>
@@ -73,5 +253,280 @@
             <a href="https://chat.whatsapp.com/IulubL26uYyJICyAj9DWg6" style="color: white;">WhatsApp Group</a>
         </p>
     </footer>
+
+    <script>
+        // Autoplay audio when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Try to play the audio after a short delay to improve autoplay chances
+            setTimeout(() => {
+                const audio = document.getElementById('welcome-audio');
+                
+                // Play audio with user interaction fallback
+                const playPromise = audio.play();
+                
+                if (playPromise !== undefined) {
+                    playPromise.catch(error => {
+                        // Auto-play was prevented - show a play button as fallback
+                        console.log("Autoplay prevented:", error);
+                        
+                        // Create a play button
+                        const playButton = document.createElement('button');
+                        playButton.innerHTML = '🔊 Play Goten Introduction';
+                        playButton.classList.add('cta-button');
+                        playButton.style.marginTop = '10px';
+                        
+                        // Add click event to play audio
+                        playButton.addEventListener('click', () => {
+                            audio.play();
+                            playButton.disabled = true;
+                            playButton.innerHTML = '🔊 Playing...';
+                        });
+                        
+                        // Add the button after the header
+                        document.querySelector('header').appendChild(playButton);
+                    });
+                }
+            }, 1000);
+        });
+    
+        // Configuration - will use current host if not localhost
+        const API_URL = window.location.hostname === 'localhost' 
+            ? 'http://localhost:3000' 
+            : 'https://' + window.location.hostname.replace('static', 'api');
+        
+        console.log('Using API URL:', API_URL);
+        
+        // Show/hide session generator
+        document.getElementById('show-session-generator').addEventListener('click', function() {
+            document.getElementById('session-generator').style.display = 'block';
+            document.getElementById('legacy-pairing').style.display = 'none';
+        });
+        
+        function hideSessionGenerator() {
+            document.getElementById('session-generator').style.display = 'none';
+        }
+        
+        // Show/hide legacy pairing
+        document.getElementById('show-legacy-pairing').addEventListener('click', function() {
+            document.getElementById('legacy-pairing').style.display = 'block';
+            document.getElementById('session-generator').style.display = 'none';
+        });
+        
+        function hideLegacyPairing() {
+            document.getElementById('legacy-pairing').style.display = 'none';
+        }
+        
+        // Session Generator functionality
+        const pairingFormContainer = document.getElementById('pairing-form-container');
+        const pairCodeContainer = document.getElementById('pair-code-container');
+        const pairingResult = document.getElementById('pairing-result');
+        const pairingStatus = document.getElementById('pairing-status');
+        const pairingCode = document.getElementById('pairing-code');
+        
+        // Function to check pairing status
+        function checkPairingStatus(requestId) {
+            fetch(`${API_URL}/check-render-pairing-status`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ requestId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.paired) {
+                    // Show success message with session ID
+                    pairingStatus.innerHTML = '<p>Successfully paired with WhatsApp! Check your messages.</p>';
+                    pairingStatus.className = 'success';
+                    
+                    // Create result container
+                    const resultDiv = document.createElement('div');
+                    resultDiv.className = 'success';
+                    resultDiv.style.padding = '15px';
+                    resultDiv.style.borderRadius = '4px';
+                    resultDiv.style.marginTop = '20px';
+                    
+                    resultDiv.innerHTML = 
+                        '<h3>Pairing Successful!</h3>' +
+                        '<p>WhatsApp has been successfully paired, and the session ID has been sent to your WhatsApp.</p>' +
+                        '<div class="instructions">' +
+                            '<h3>Heroku Deployment Instructions:</h3>' +
+                            '<ol>' +
+                                '<li>Check your WhatsApp for the encrypted session ID message</li>' +
+                                '<li>Copy the encrypted session ID from that message</li>' +
+                                '<li>Go to your Heroku dashboard</li>' +
+                                '<li>Create a new app for your GOTEN bot</li>' +
+                                '<li>Add the following environment variable:' +
+                                    '<ul>' +
+                                        '<li><strong>SESSION_ID</strong>: Your copied session ID</li>' +
+                                    '</ul>' +
+                                '</li>' +
+                                '<li>Deploy your bot to Heroku</li>' +
+                            '</ol>' +
+                            '<p><strong>Remember:</strong> This service is only for generating the session ID. The actual bot should be deployed on Heroku.</p>' +
+                        '</div>';
+                    
+                    // Add to the page
+                    pairCodeContainer.appendChild(resultDiv);
+                } else if (data.error) {
+                    // Show error message
+                    pairingStatus.innerHTML = '<p>Error: ' + data.error + '</p>';
+                    pairingStatus.className = 'error';
+                } else {
+                    // Still waiting, check again in 3 seconds
+                    setTimeout(() => checkPairingStatus(requestId), 3000);
+                }
+            })
+            .catch(error => {
+                console.error('Error checking pairing status:', error);
+                pairingStatus.innerHTML = '<p>Error checking pairing status. Please try again.</p>';
+                pairingStatus.className = 'error';
+            });
+        }
+        
+        document.getElementById('pairingForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const phone = document.getElementById('phone').value;
+            pairingResult.innerHTML = '<div class="loading"><p>Generating pairing code, please wait...</p><div class="loading-spinner"></div></div>';
+            
+            try {
+                const response = await fetch(`${API_URL}/render-pair`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ phone })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success && data.pairingCode) {
+                    // Hide the form and show the pairing code
+                    pairingFormContainer.classList.add('hidden');
+                    pairCodeContainer.classList.remove('hidden');
+                    
+                    // Display the pairing code
+                    pairingCode.textContent = data.pairingCode;
+                    
+                    // Start checking for pairing status
+                    checkPairingStatus(data.requestId);
+                } else {
+                    pairingResult.className = 'error';
+                    pairingResult.innerHTML = 'Error: ' + (data.error || 'Failed to generate pairing code');
+                }
+            } catch (error) {
+                pairingResult.className = 'error';
+                pairingResult.innerHTML = 'Error: ' + error.message;
+            }
+        });
+        
+        // Legacy Pairing functionality
+        const generateQrBtn = document.getElementById('generate-qr');
+        const qrContainer = document.getElementById('qr-container');
+        const qrCode = document.getElementById('qr-code');
+        const qrStatus = document.getElementById('qr-status');
+        
+        generateQrBtn.addEventListener('click', async () => {
+            generateQrBtn.disabled = true;
+            qrContainer.classList.remove('hidden');
+            qrCode.innerHTML = '<div class="loading"><div class="loading-spinner"></div><p>Generating QR code...</p></div>';
+            
+            try {
+                const response = await fetch(`${API_URL}/legacy-pair`, {
+                    method: 'POST'
+                });
+                
+                const data = await response.json();
+                
+                if (data.success && data.qrCode) {
+                    // Display the QR code
+                    qrCode.innerHTML = `<img src="${data.qrCode}" alt="WhatsApp QR Code" style="max-width:100%;">`;
+                    
+                    // Start checking for pairing status
+                    checkLegacyPairingStatus(data.requestId);
+                } else {
+                    qrStatus.className = 'error';
+                    qrStatus.innerHTML = 'Error: ' + (data.error || 'Failed to generate QR code');
+                    generateQrBtn.disabled = false;
+                }
+            } catch (error) {
+                qrStatus.className = 'error';
+                qrStatus.innerHTML = 'Error: ' + error.message;
+                generateQrBtn.disabled = false;
+            }
+        });
+        
+        function checkLegacyPairingStatus(requestId) {
+            fetch(`${API_URL}/check-legacy-status`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ requestId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.paired) {
+                    // Show success message with session ID
+                    qrStatus.innerHTML = '<p>Successfully paired with WhatsApp! Check your messages.</p>';
+                    qrStatus.className = 'success';
+                    
+                    // Create result container
+                    const resultDiv = document.createElement('div');
+                    resultDiv.className = 'success';
+                    resultDiv.style.padding = '15px';
+                    resultDiv.style.borderRadius = '4px';
+                    resultDiv.style.marginTop = '20px';
+                    
+                    resultDiv.innerHTML = 
+                        '<h3>Pairing Successful!</h3>' +
+                        '<p>WhatsApp has been successfully paired, and the session ID has been sent to your WhatsApp.</p>' +
+                        '<div class="instructions">' +
+                            '<h3>Heroku Deployment Instructions:</h3>' +
+                            '<ol>' +
+                                '<li>Check your WhatsApp for the encrypted session ID message</li>' +
+                                '<li>Copy the encrypted session ID from that message</li>' +
+                                '<li>Go to your Heroku dashboard</li>' +
+                                '<li>Create a new app for your GOTEN bot</li>' +
+                                '<li>Add the following environment variable:' +
+                                    '<ul>' +
+                                        '<li><strong>SESSION_ID</strong>: Your copied session ID</li>' +
+                                    '</ul>' +
+                                '</li>' +
+                                '<li>Deploy your bot to Heroku</li>' +
+                            '</ol>' +
+                            '<p><strong>Remember:</strong> This service is only for generating the session ID. The actual bot should be deployed on Heroku.</p>' +
+                        '</div>';
+                    
+                    // Add to the page
+                    qrContainer.appendChild(resultDiv);
+                } else if (data.error) {
+                    // Show error message
+                    qrStatus.innerHTML = '<p>Error: ' + data.error + '</p>';
+                    qrStatus.className = 'error';
+                    generateQrBtn.disabled = false;
+                } else {
+                    // Still waiting, check again in 3 seconds
+                    setTimeout(() => checkLegacyPairingStatus(requestId), 3000);
+                }
+            })
+            .catch(error => {
+                console.error('Error checking legacy pairing status:', error);
+                qrStatus.innerHTML = '<p>Error checking pairing status. Please try again.</p>';
+                qrStatus.className = 'error';
+                generateQrBtn.disabled = false;
+            });
+        }
+        
+        function copyToClipboard(elementId) {
+            const element = document.getElementById(elementId);
+            const text = element.textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Copied to clipboard!');
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+            });
+        }
+    </script>
 </body>
 </html> 
