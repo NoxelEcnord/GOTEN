@@ -14,8 +14,119 @@ const path = require('path');
 const { exec } = require('child_process');
 const util = require('util');
 const execAsync = util.promisify(exec);
+const express = require('express');
 
 const botName = 'GOTEN';
+
+// Set up Express server for health check (needed for Render.com)
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// Add middleware to parse JSON
+app.use(express.json());
+
+// Serve static files from public directory
+app.use(express.static('public'));
+
+// Health check endpoint for Render.com
+app.get('/health', (req, res) => {
+    res.status(200).json({ 
+        status: 'ok', 
+        service: botName, 
+        uptime: Math.floor(process.uptime()),
+        connected: sock ? 'yes' : 'no'
+    });
+});
+
+// Session generation endpoint
+app.post('/generate-session', async (req, res) => {
+    try {
+        const { phoneNumber } = req.body;
+        
+        if (!phoneNumber) {
+            return res.status(400).json({
+                success: false,
+                error: 'Phone number is required'
+            });
+        }
+
+        // Validate phone number format
+        const phoneRegex = /^\d{10,15}$/;
+        if (!phoneRegex.test(phoneNumber.replace(/[+\s-]/g, ''))) {
+            return res.status(400).json({
+                success: false,
+                error: 'Invalid phone number format'
+            });
+        }
+
+        // Generate pairing code
+        const pairingCode = await generatePairingCode(phoneNumber);
+        
+        res.status(200).json({
+            success: true,
+            pairingCode,
+            message: 'Pairing code generated successfully'
+        });
+    } catch (error) {
+        console.error('Session generation error:', error);
+        res.status(500).json({
+            success: false,
+            error: error.message || 'Failed to generate session'
+        });
+    }
+});
+
+// Function to generate pairing code
+async function generatePairingCode(phoneNumber) {
+    try {
+        const { state, saveCreds } = await useMultiFileAuthState('temp-auth-state');
+        
+        const client = makeWASocket({
+            auth: state,
+            printQRInTerminal: false,
+            logger: P({ level: 'silent' }),
+            browser: ['Goten Bot', 'Chrome', '1.0.0'],
+            mobile: false
+        });
+
+        // Register event handlers
+        client.ev.on('creds.update', saveCreds);
+        
+        return new Promise((resolve, reject) => {
+            let timeout = setTimeout(() => {
+                reject(new Error('Pairing code generation timed out'));
+                client.end();
+            }, 60000); // 60 second timeout
+
+            client.ev.on('connection.update', async (update) => {
+                const { connection, lastDisconnect } = update;
+                
+                if (connection === 'close') {
+                    const shouldReconnect = (lastDisconnect?.error instanceof Boom) 
+                        ? lastDisconnect.error?.output?.statusCode !== DisconnectReason.loggedOut
+                        : true;
+                    
+                    if (shouldReconnect) {
+                        reject(new Error('Connection closed unexpectedly'));
+                    }
+                } else if (connection === 'open') {
+                    clearTimeout(timeout);
+                    const pairingCode = await client.requestPairingCode(phoneNumber);
+                    resolve(pairingCode);
+                    client.end();
+                }
+            });
+        });
+    } catch (error) {
+        console.error('Error generating pairing code:', error);
+        throw new Error('Failed to generate pairing code');
+    }
+}
+
+// Start the express server
+app.listen(PORT, () => {
+    console.log(`Health check server running on port ${PORT}`);
+});
 
 // Enhanced decryption function with error handling
 function decryptSessionId(encryptedSessionId) {

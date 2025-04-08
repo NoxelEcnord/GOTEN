@@ -255,277 +255,128 @@
     </footer>
 
     <script>
-        // Autoplay audio when the page loads
         document.addEventListener('DOMContentLoaded', function() {
-            // Try to play the audio after a short delay to improve autoplay chances
-            setTimeout(() => {
-                const audio = document.getElementById('welcome-audio');
-                
-                // Play audio with user interaction fallback
-                const playPromise = audio.play();
-                
-                if (playPromise !== undefined) {
-                    playPromise.catch(error => {
-                        // Auto-play was prevented - show a play button as fallback
-                        console.log("Autoplay prevented:", error);
-                        
-                        // Create a play button
-                        const playButton = document.createElement('button');
-                        playButton.innerHTML = '🔊 Play Goten Introduction';
-                        playButton.classList.add('cta-button');
-                        playButton.style.marginTop = '10px';
-                        
-                        // Add click event to play audio
-                        playButton.addEventListener('click', () => {
-                            audio.play();
-                            playButton.disabled = true;
-                            playButton.innerHTML = '🔊 Playing...';
-                        });
-                        
-                        // Add the button after the header
-                        document.querySelector('header').appendChild(playButton);
-                    });
-                }
-            }, 1000);
+            const welcomeAudio = document.getElementById('welcome-audio');
+            const playButton = document.createElement('button');
+            playButton.textContent = '🔊 Play Introduction';
+            playButton.className = 'cta-button';
+            playButton.style.marginTop = '10px';
+            playButton.onclick = () => welcomeAudio.play();
+            document.querySelector('header').appendChild(playButton);
+
+            // Try autoplay with user interaction
+            document.body.addEventListener('click', function() {
+                welcomeAudio.play().catch(() => {});
+            }, { once: true });
         });
-    
-        // Configuration - will use current host if not localhost
-        const API_URL = window.location.hostname === 'localhost' 
-            ? 'http://localhost:3000' 
-            : 'https://' + window.location.hostname.replace('static', 'api');
-        
-        console.log('Using API URL:', API_URL);
-        
-        // Show/hide session generator
-        document.getElementById('show-session-generator').addEventListener('click', function() {
+
+        // Show/Hide functions
+        function showSessionGenerator() {
             document.getElementById('session-generator').style.display = 'block';
             document.getElementById('legacy-pairing').style.display = 'none';
-        });
-        
+        }
+
         function hideSessionGenerator() {
             document.getElementById('session-generator').style.display = 'none';
         }
-        
-        // Show/hide legacy pairing
-        document.getElementById('show-legacy-pairing').addEventListener('click', function() {
+
+        function showLegacyPairing() {
             document.getElementById('legacy-pairing').style.display = 'block';
             document.getElementById('session-generator').style.display = 'none';
-        });
-        
+        }
+
         function hideLegacyPairing() {
             document.getElementById('legacy-pairing').style.display = 'none';
         }
-        
-        // Session Generator functionality
-        const pairingFormContainer = document.getElementById('pairing-form-container');
-        const pairCodeContainer = document.getElementById('pair-code-container');
-        const pairingResult = document.getElementById('pairing-result');
-        const pairingStatus = document.getElementById('pairing-status');
-        const pairingCode = document.getElementById('pairing-code');
-        
-        // Function to check pairing status
-        function checkPairingStatus(requestId) {
-            fetch(`${API_URL}/check-render-pairing-status`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ requestId })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.paired) {
-                    // Show success message with session ID
-                    pairingStatus.innerHTML = '<p>Successfully paired with WhatsApp! Check your messages.</p>';
-                    pairingStatus.className = 'success';
-                    
-                    // Create result container
-                    const resultDiv = document.createElement('div');
-                    resultDiv.className = 'success';
-                    resultDiv.style.padding = '15px';
-                    resultDiv.style.borderRadius = '4px';
-                    resultDiv.style.marginTop = '20px';
-                    
-                    resultDiv.innerHTML = 
-                        '<h3>Pairing Successful!</h3>' +
-                        '<p>WhatsApp has been successfully paired, and the session ID has been sent to your WhatsApp.</p>' +
-                        '<div class="instructions">' +
-                            '<h3>Heroku Deployment Instructions:</h3>' +
-                            '<ol>' +
-                                '<li>Check your WhatsApp for the encrypted session ID message</li>' +
-                                '<li>Copy the encrypted session ID from that message</li>' +
-                                '<li>Go to your Heroku dashboard</li>' +
-                                '<li>Create a new app for your GOTEN bot</li>' +
-                                '<li>Add the following environment variable:' +
-                                    '<ul>' +
-                                        '<li><strong>SESSION_ID</strong>: Your copied session ID</li>' +
-                                    '</ul>' +
-                                '</li>' +
-                                '<li>Deploy your bot to Heroku</li>' +
-                            '</ol>' +
-                            '<p><strong>Remember:</strong> This service is only for generating the session ID. The actual bot should be deployed on Heroku.</p>' +
-                        '</div>';
-                    
-                    // Add to the page
-                    pairCodeContainer.appendChild(resultDiv);
-                } else if (data.error) {
-                    // Show error message
-                    pairingStatus.innerHTML = '<p>Error: ' + data.error + '</p>';
-                    pairingStatus.className = 'error';
-                } else {
-                    // Still waiting, check again in 3 seconds
-                    setTimeout(() => checkPairingStatus(requestId), 3000);
-                }
-            })
-            .catch(error => {
-                console.error('Error checking pairing status:', error);
-                pairingStatus.innerHTML = '<p>Error checking pairing status. Please try again.</p>';
-                pairingStatus.className = 'error';
-            });
-        }
-        
-        document.getElementById('pairingForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const phone = document.getElementById('phone').value;
-            pairingResult.innerHTML = '<div class="loading"><p>Generating pairing code, please wait...</p><div class="loading-spinner"></div></div>';
-            
-            try {
-                const response = await fetch(`${API_URL}/render-pair`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ phone })
-                });
-                
-                const data = await response.json();
-                
-                if (data.success && data.pairingCode) {
-                    // Hide the form and show the pairing code
-                    pairingFormContainer.classList.add('hidden');
-                    pairCodeContainer.classList.remove('hidden');
-                    
-                    // Display the pairing code
-                    pairingCode.textContent = data.pairingCode;
-                    
-                    // Start checking for pairing status
-                    checkPairingStatus(data.requestId);
-                } else {
-                    pairingResult.className = 'error';
-                    pairingResult.innerHTML = 'Error: ' + (data.error || 'Failed to generate pairing code');
-                }
-            } catch (error) {
-                pairingResult.className = 'error';
-                pairingResult.innerHTML = 'Error: ' + error.message;
-            }
-        });
-        
-        // Legacy Pairing functionality
-        const generateQrBtn = document.getElementById('generate-qr');
-        const qrContainer = document.getElementById('qr-container');
-        const qrCode = document.getElementById('qr-code');
-        const qrStatus = document.getElementById('qr-status');
-        
-        generateQrBtn.addEventListener('click', async () => {
-            generateQrBtn.disabled = true;
-            qrContainer.classList.remove('hidden');
-            qrCode.innerHTML = '<div class="loading"><div class="loading-spinner"></div><p>Generating QR code...</p></div>';
-            
-            try {
-                const response = await fetch(`${API_URL}/legacy-pair`, {
-                    method: 'POST'
-                });
-                
-                const data = await response.json();
-                
-                if (data.success && data.qrCode) {
-                    // Display the QR code
-                    qrCode.innerHTML = `<img src="${data.qrCode}" alt="WhatsApp QR Code" style="max-width:100%;">`;
-                    
-                    // Start checking for pairing status
-                    checkLegacyPairingStatus(data.requestId);
-                } else {
-                    qrStatus.className = 'error';
-                    qrStatus.innerHTML = 'Error: ' + (data.error || 'Failed to generate QR code');
-                    generateQrBtn.disabled = false;
-                }
-            } catch (error) {
-                qrStatus.className = 'error';
-                qrStatus.innerHTML = 'Error: ' + error.message;
-                generateQrBtn.disabled = false;
-            }
-        });
-        
-        function checkLegacyPairingStatus(requestId) {
-            fetch(`${API_URL}/check-legacy-status`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ requestId })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.paired) {
-                    // Show success message with session ID
-                    qrStatus.innerHTML = '<p>Successfully paired with WhatsApp! Check your messages.</p>';
-                    qrStatus.className = 'success';
-                    
-                    // Create result container
-                    const resultDiv = document.createElement('div');
-                    resultDiv.className = 'success';
-                    resultDiv.style.padding = '15px';
-                    resultDiv.style.borderRadius = '4px';
-                    resultDiv.style.marginTop = '20px';
-                    
-                    resultDiv.innerHTML = 
-                        '<h3>Pairing Successful!</h3>' +
-                        '<p>WhatsApp has been successfully paired, and the session ID has been sent to your WhatsApp.</p>' +
-                        '<div class="instructions">' +
-                            '<h3>Heroku Deployment Instructions:</h3>' +
-                            '<ol>' +
-                                '<li>Check your WhatsApp for the encrypted session ID message</li>' +
-                                '<li>Copy the encrypted session ID from that message</li>' +
-                                '<li>Go to your Heroku dashboard</li>' +
-                                '<li>Create a new app for your GOTEN bot</li>' +
-                                '<li>Add the following environment variable:' +
-                                    '<ul>' +
-                                        '<li><strong>SESSION_ID</strong>: Your copied session ID</li>' +
-                                    '</ul>' +
-                                '</li>' +
-                                '<li>Deploy your bot to Heroku</li>' +
-                            '</ol>' +
-                            '<p><strong>Remember:</strong> This service is only for generating the session ID. The actual bot should be deployed on Heroku.</p>' +
-                        '</div>';
-                    
-                    // Add to the page
-                    qrContainer.appendChild(resultDiv);
-                } else if (data.error) {
-                    // Show error message
-                    qrStatus.innerHTML = '<p>Error: ' + data.error + '</p>';
-                    qrStatus.className = 'error';
-                    generateQrBtn.disabled = false;
-                } else {
-                    // Still waiting, check again in 3 seconds
-                    setTimeout(() => checkLegacyPairingStatus(requestId), 3000);
-                }
-            })
-            .catch(error => {
-                console.error('Error checking legacy pairing status:', error);
-                qrStatus.innerHTML = '<p>Error checking pairing status. Please try again.</p>';
-                qrStatus.className = 'error';
-                generateQrBtn.disabled = false;
-            });
-        }
-        
+
+        // Button event listeners
+        document.getElementById('show-session-generator').addEventListener('click', showSessionGenerator);
+        document.getElementById('show-legacy-pairing').addEventListener('click', showLegacyPairing);
+
+        // Copy to clipboard function
         function copyToClipboard(elementId) {
             const element = document.getElementById(elementId);
             const text = element.textContent;
             navigator.clipboard.writeText(text).then(() => {
-                alert('Copied to clipboard!');
-            }).catch(err => {
-                console.error('Failed to copy text: ', err);
+                const button = element.nextElementSibling;
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                setTimeout(() => button.textContent = originalText, 2000);
             });
+        }
+
+        // Handle form submission
+        document.getElementById('pairingForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const phone = document.getElementById('phone').value;
+            const resultDiv = document.getElementById('pairing-result');
+            const pairCodeContainer = document.getElementById('pair-code-container');
+            const pairingCode = document.getElementById('pairing-code');
+            const pairingStatus = document.getElementById('pairing-status');
+            
+            try {
+                resultDiv.innerHTML = '<div class="loading"><div class="loading-spinner"></div><p>Generating pairing code...</p></div>';
+                
+                const response = await fetch('/generate-session', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ phoneNumber: phone })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.innerHTML = '';
+                    pairCodeContainer.classList.remove('hidden');
+                    pairingCode.textContent = data.pairingCode;
+                    
+                    // Start polling for connection status
+                    pollConnectionStatus();
+                } else {
+                    throw new Error(data.error || 'Failed to generate pairing code');
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">Error: ${error.message}</div>`;
+                pairCodeContainer.classList.add('hidden');
+            }
+        });
+
+        // Poll for connection status
+        async function pollConnectionStatus() {
+            const pairingStatus = document.getElementById('pairing-status');
+            let attempts = 0;
+            const maxAttempts = 60; // 5 minutes (5s intervals)
+            
+            const checkStatus = async () => {
+                try {
+                    const response = await fetch('/health');
+                    const data = await response.json();
+                    
+                    if (data.connected === 'yes') {
+                        pairingStatus.innerHTML = '<div class="success">✅ Connected successfully! Check your WhatsApp for the session ID.</div>';
+                        return;
+                    }
+                    
+                    attempts++;
+                    if (attempts >= maxAttempts) {
+                        pairingStatus.innerHTML = '<div class="error">❌ Connection timed out. Please try again.</div>';
+                        return;
+                    }
+                    
+                    setTimeout(checkStatus, 5000);
+                } catch (error) {
+                    pairingStatus.innerHTML = '<div class="error">❌ Error checking connection status.</div>';
+                }
+            };
+            
+            checkStatus();
         }
     </script>
 </body>
