@@ -49,6 +49,70 @@ npm run dev
 npm run goten
 ```
 
+## 📱 Deploy to Heroku
+
+### One-Click Deployment
+
+Click the button below to deploy to Heroku:
+
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/yourusername/GOTEN)
+
+### Manual Deployment
+
+1. Create a Heroku account if you don't have one
+2. Install [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli)
+3. Login to Heroku:
+```bash
+heroku login
+```
+
+4. Create a new app:
+```bash
+heroku create your-app-name
+```
+
+5. Add required buildpacks:
+```bash
+heroku buildpacks:add heroku/nodejs
+heroku buildpacks:add https://github.com/jonathanong/heroku-buildpack-ffmpeg-latest
+```
+
+6. Add PostgreSQL addon:
+```bash
+heroku addons:create heroku-postgresql:hobby-dev
+```
+
+7. Configure environment variables:
+```bash
+# Set required variables
+heroku config:set BOT_NAME=GOTEN
+heroku config:set OWNER_NUMBER=your_phone_number
+heroku config:set SESSION_ID=your_encrypted_session_id
+
+# Set optional variables
+heroku config:set NO_PREFIX=yes
+heroku config:set PUBLIC_MODE=yes
+heroku config:set AI_ENABLED=yes
+heroku config:set SHENG_MODE=yes
+```
+
+8. Deploy to Heroku:
+```bash
+git push heroku main
+```
+
+9. Start the bot:
+```bash
+heroku ps:scale web=1
+```
+
+### Generating Session ID
+
+Before deploying to Heroku, you need to generate and encrypt a session ID:
+
+1. Follow the instructions in [GOTEN_SESSION_GENERATOR.md](GOTEN_SESSION_GENERATOR.md)
+2. Use the encrypted session ID when deploying
+
 ## 🤖 Bot Commands
 
 ### System Commands

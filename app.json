@@ -1,0 +1,127 @@
+{
+  "name": "GOTEN Bot",
+  "description": "A powerful WhatsApp bot with AI capabilities, Kenyan Sheng mode, and many other features",
+  "repository": "https://github.com/yourusername/GOTEN",
+  "logo": "https://telegra.ph/file/0c225f7da5616cdcbec80.jpg",
+  "keywords": ["whatsapp-bot", "baileys", "nodejs", "ai-bot", "goten"],
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    },
+    {
+      "url": "https://github.com/jonathanong/heroku-buildpack-ffmpeg-latest"
+    }
+  ],
+  "addons": [
+    {
+      "plan": "heroku-postgresql:hobby-dev",
+      "options": {
+        "version": "13"
+      }
+    }
+  ],
+  "env": {
+    "BOT_NAME": {
+      "description": "Name of your WhatsApp bot",
+      "value": "GOTEN",
+      "required": true
+    },
+    "PREFIX": {
+      "description": "Command prefix for the bot",
+      "value": ".",
+      "required": false
+    },
+    "OWNER_NUMBER": {
+      "description": "Your WhatsApp number with country code (e.g., 254712345678)",
+      "required": true
+    },
+    "SESSION_ID": {
+      "description": "Your encrypted session ID (follow instructions in GOTEN_SESSION_GENERATOR.md)",
+      "required": true
+    },
+    "NO_PREFIX": {
+      "description": "Enable prefixless mode",
+      "value": "yes",
+      "required": false
+    },
+    "PUBLIC_MODE": {
+      "description": "Allow anyone to use the bot",
+      "value": "yes",
+      "required": false
+    },
+    "AI_ENABLED": {
+      "description": "Enable AI responses",
+      "value": "yes",
+      "required": false
+    },
+    "SHENG_MODE": {
+      "description": "Enable Kenyan Sheng slang mode",
+      "value": "yes",
+      "required": false
+    },
+    "OPENAI_API_KEY": {
+      "description": "API key for OpenAI (leave blank to disable)",
+      "required": false
+    },
+    "GEMINI_API_KEY": {
+      "description": "API key for Google Gemini (leave blank to disable)",
+      "required": false
+    },
+    "AUTO_READ_STATUS": {
+      "description": "Automatically read status updates",
+      "value": "yes",
+      "required": false
+    },
+    "AUTO_DOWNLOAD_STATUS": {
+      "description": "Automatically download status updates",
+      "value": "no",
+      "required": false
+    },
+    "ANTI_DELETE_MESSAGE": {
+      "description": "Detect and report deleted messages",
+      "value": "yes",
+      "required": false
+    },
+    "ALIVE_MESSAGE": {
+      "description": "Send periodic alive messages",
+      "value": "yes",
+      "required": false
+    },
+    "ALIVE_INTERVAL": {
+      "description": "Interval for alive messages (e.g., 5m, 1h)",
+      "value": "5m",
+      "required": false
+    },
+    "PAIRING_CODE": {
+      "description": "6-digit pairing code for connection (optional)",
+      "required": false
+    },
+    "WARN_COUNT": {
+      "description": "Number of warnings before action",
+      "value": "3",
+      "required": false
+    },
+    "LOG_LEVEL": {
+      "description": "Logging level (debug, info, warn, error)",
+      "value": "info",
+      "required": false
+    },
+    "NODE_ENV": {
+      "description": "Node environment",
+      "value": "production",
+      "required": false
+    },
+    "NODE_OPTIONS": {
+      "description": "Node.js options",
+      "value": "--max_old_space_size=490",
+      "required": false
+    }
+  },
+  "success_url": "/health",
+  "formation": {
+    "web": {
+      "quantity": 1,
+      "size": "eco"
+    }
+  }
+} 
