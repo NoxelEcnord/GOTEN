@@ -12,50 +12,118 @@ if (!fs.existsSync(GOTEN_DIR)) fs.mkdirSync(GOTEN_DIR);
 if (!fs.existsSync(IMAGES_DIR)) fs.mkdirSync(IMAGES_DIR);
 if (!fs.existsSync(SOUNDS_DIR)) fs.mkdirSync(SOUNDS_DIR);
 
+// Get base URL from Render.com static site
+const STATIC_BASE_URL = 'https://goten-bot.onrender.com';
+
 // Goten resource URLs
 const GOTEN_RESOURCES = {
     images: [
         {
-            url: 'https://i.imgur.com/8QJZQYF.jpg',
-            name: 'Goten Super Saiyan',
+            url: `${STATIC_BASE_URL}/assets/images/goten_standing.jpg`,
+            name: 'Goten Standing',
             type: 'jpg'
         },
         {
-            url: 'https://i.imgur.com/9QJZQYF.jpg',
-            name: 'Goten Kid',
+            url: `${STATIC_BASE_URL}/assets/images/goten_happy_jumping.jpg`,
+            name: 'Goten Happy Jumping',
             type: 'jpg'
         },
         {
-            url: 'https://i.imgur.com/7QJZQYF.jpg',
-            name: 'Goten SSJ3',
+            url: `${STATIC_BASE_URL}/assets/images/goten_flying_happy.jpg`,
+            name: 'Goten Flying Happy',
             type: 'jpg'
         },
         {
-            url: 'https://i.imgur.com/6QJZQYF.jpg',
-            name: 'Goten and Trunks',
+            url: `${STATIC_BASE_URL}/assets/images/goten_arms_up.jpg`,
+            name: 'Goten Arms Up',
             type: 'jpg'
         },
         {
-            url: 'https://i.imgur.com/5QJZQYF.jpg',
+            url: `${STATIC_BASE_URL}/assets/images/goten_neon.jpg`,
             name: 'Goten Neon Style',
+            type: 'jpg'
+        },
+        {
+            url: `${STATIC_BASE_URL}/assets/images/goten_happy_blushing_pause.jpg`,
+            name: 'Goten Blushing',
+            type: 'jpg'
+        },
+        {
+            url: `${STATIC_BASE_URL}/assets/images/goten_ssj1_bruised_sad.jpg`,
+            name: 'Goten SSJ1 Sad',
+            type: 'jpg'
+        },
+        {
+            url: `${STATIC_BASE_URL}/assets/images/goten_and_trunks_ssj1_back_on_back_cheers.jpg`,
+            name: 'Goten and Trunks Cheers',
+            type: 'jpg'
+        },
+        {
+            url: `${STATIC_BASE_URL}/assets/images/goten_wasted_ssj3_angry_bruised.jpg`,
+            name: 'Goten SSJ3 Angry',
+            type: 'jpg'
+        },
+        {
+            url: `${STATIC_BASE_URL}/assets/images/goten_ss_god_red_holding spirit bomb_looking curius.jpg`,
+            name: 'Goten SS God',
+            type: 'jpg'
+        },
+        {
+            url: `${STATIC_BASE_URL}/assets/images/goten_x_trunks_ssj1_playing.jpg`,
+            name: 'Goten and Trunks Playing',
             type: 'jpg'
         }
     ],
     sounds: [
         {
-            url: 'https://www.soundjay.com/button/sounds/button-09.wav',
-            name: 'Goten Voice 1',
-            type: 'wav'
+            url: `${STATIC_BASE_URL}/assets/sounds/welcome.mp3`,
+            name: 'Goten Welcome',
+            type: 'mp3'
         },
         {
-            url: 'https://www.soundjay.com/button/sounds/button-10.wav',
-            name: 'Goten Voice 2',
-            type: 'wav'
+            url: `${STATIC_BASE_URL}/assets/sounds/goodmorning.mp3`,
+            name: 'Goten Good Morning',
+            type: 'mp3'
         },
         {
-            url: 'https://www.soundjay.com/button/sounds/button-11.wav',
-            name: 'Goten Voice 3',
-            type: 'wav'
+            url: `${STATIC_BASE_URL}/assets/sounds/goodafternoon.mp3`,
+            name: 'Goten Good Afternoon',
+            type: 'mp3'
+        },
+        {
+            url: `${STATIC_BASE_URL}/assets/sounds/goodnight.mp3`,
+            name: 'Goten Good Night',
+            type: 'mp3'
+        },
+        {
+            url: `${STATIC_BASE_URL}/assets/sounds/help.mp3`,
+            name: 'Goten Help',
+            type: 'mp3'
+        },
+        {
+            url: `${STATIC_BASE_URL}/assets/sounds/thanks.mp3`,
+            name: 'Goten Thanks',
+            type: 'mp3'
+        },
+        {
+            url: `${STATIC_BASE_URL}/assets/sounds/sorry.mp3`,
+            name: 'Goten Sorry',
+            type: 'mp3'
+        },
+        {
+            url: `${STATIC_BASE_URL}/assets/sounds/joke.mp3`,
+            name: 'Goten Joke',
+            type: 'mp3'
+        },
+        {
+            url: `${STATIC_BASE_URL}/assets/sounds/shengmode.mp3`,
+            name: 'Goten Sheng Mode',
+            type: 'mp3'
+        },
+        {
+            url: `${STATIC_BASE_URL}/assets/sounds/aimode.mp3`,
+            name: 'Goten AI Mode',
+            type: 'mp3'
         }
     ]
 };
@@ -155,6 +223,7 @@ async function sendGotenResource(message, zk, args) {
         const filePath = path.join(dir, files[index - 1]);
         const fileBuffer = fs.readFileSync(filePath);
         const fileName = files[index - 1].split('.')[0].replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        const fileExt = files[index - 1].split('.').pop().toLowerCase();
 
         if (type === 'image') {
             await zk.sendMessage(message.from, { 
@@ -162,9 +231,12 @@ async function sendGotenResource(message, zk, args) {
                 caption: `*${fileName}*`
             });
         } else {
+            // Determine correct mimetype based on file extension
+            const mimetype = fileExt === 'mp3' ? 'audio/mp3' : 'audio/wav';
+            
             await zk.sendMessage(message.from, { 
                 audio: fileBuffer, 
-                mimetype: 'audio/wav',
+                mimetype: mimetype,
                 caption: `*${fileName}*`
             });
         }
