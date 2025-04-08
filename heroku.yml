@@ -1,0 +1,71 @@
+build:
+  config:
+    NODE_MODULES_CACHE: false
+    NPM_CONFIG_PRODUCTION: false
+    YARN_PRODUCTION: false
+
+env:
+  # Bot Configuration
+  BOT_NAME: "GOTEN"
+  PREFIX: "."
+  OWNER_NUMBER: "your_phone_number" # Replace with your phone number with country code
+  
+  # Contact Information
+  TELEGRAM_CHANNEL: "t.me/botGOTEN"
+  WHATSAPP_GROUP: "https://chat.whatsapp.com/IulubL26uYyJICyAj9DWg6"
+  WHATSAPP_CHANNEL: "https://whatsapp.com/channel/0029VaevRgSEwEjnvksGQp2K"
+  
+  # Heroku PostgreSQL (Built-in)
+  # This will be automatically set by Heroku when you add the PostgreSQL addon
+  # No need to manually set DATABASE_URL
+  
+  # Session Configuration
+  SESSION_ID: "GOTEN_SESSION"
+  
+  # Bot Features (Toggle these during deployment)
+  # Alive Message Settings
+  ENABLE_ALIVE: "true" # Set to "false" to disable
+  ALIVE_INTERVAL: "5m" # Options: "1m", "5m", "15m", "30m", "1h"
+  ALIVE_MESSAGE: "yes" # Set to "no" to disable
+  
+  # Feature Toggles
+  ENABLE_VIEWONCE: "true" # Set to "false" to disable
+  ENABLE_STICKER: "true" # Set to "false" to disable
+  ENABLE_MUSIC: "true" # Set to "false" to disable
+  ENABLE_GAMES: "true" # Set to "false" to disable
+  ENABLE_AI: "true" # Set to "false" to disable
+  
+  # Security Settings
+  MODS: "your_phone_number" # Add mods' numbers separated by commas
+  SUPER_USER: "your_phone_number" # Add super users' numbers separated by commas
+  ENABLE_ANTI_SPAM: "true" # Set to "false" to disable
+  MAX_MESSAGES_PER_MINUTE: "20" # Adjust as needed
+  
+  # Heroku Performance Settings
+  WEB_CONCURRENCY: "1" # Adjust based on your dyno type
+  NODE_OPTIONS: "--max_old_space_size=490"
+  
+  # Heroku Logging (Built-in)
+  # Use heroku logs --tail to view logs
+  LOG_LEVEL: "info" # Options: "debug", "info", "warn", "error"
+  
+  # Node Configuration
+  NODE_ENV: "production"
+  
+  # Bot Features
+  SUPPORT_GROUP: "https://chat.whatsapp.com/IulubL26uYyJICyAj9DWg6"
+  
+  # Optional Features
+  ENABLE_VIEWONCE: "true"
+  ENABLE_STICKER: "true"
+  ENABLE_ALIVE: "true"
+  
+  # Performance
+  MAX_MEMORY_RESTART: "490M"
+  
+  # Logging
+  LOG_LEVEL: "info"
+  
+  # Node Configuration
+  NODE_ENV: "production"
+  NODE_OPTIONS: "--max_old_space_size=490" 
