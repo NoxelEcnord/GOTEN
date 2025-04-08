@@ -18,113 +18,31 @@ const STATIC_BASE_URL = 'https://goten-bot.onrender.com';
 // Goten resource URLs
 const GOTEN_RESOURCES = {
     images: [
-        {
-            url: `${STATIC_BASE_URL}/assets/images/goten_standing.jpg`,
-            name: 'Goten Standing',
-            type: 'jpg'
-        },
-        {
-            url: `${STATIC_BASE_URL}/assets/images/goten_happy_jumping.jpg`,
-            name: 'Goten Happy Jumping',
-            type: 'jpg'
-        },
-        {
-            url: `${STATIC_BASE_URL}/assets/images/goten_flying_happy.jpg`,
-            name: 'Goten Flying Happy',
-            type: 'jpg'
-        },
-        {
-            url: `${STATIC_BASE_URL}/assets/images/goten_arms_up.jpg`,
-            name: 'Goten Arms Up',
-            type: 'jpg'
-        },
-        {
-            url: `${STATIC_BASE_URL}/assets/images/goten_neon.jpg`,
-            name: 'Goten Neon Style',
-            type: 'jpg'
-        },
-        {
-            url: `${STATIC_BASE_URL}/assets/images/goten_happy_blushing_pause.jpg`,
-            name: 'Goten Blushing',
-            type: 'jpg'
-        },
-        {
-            url: `${STATIC_BASE_URL}/assets/images/goten_ssj1_bruised_sad.jpg`,
-            name: 'Goten SSJ1 Sad',
-            type: 'jpg'
-        },
-        {
-            url: `${STATIC_BASE_URL}/assets/images/goten_and_trunks_ssj1_back_on_back_cheers.jpg`,
-            name: 'Goten and Trunks Cheers',
-            type: 'jpg'
-        },
-        {
-            url: `${STATIC_BASE_URL}/assets/images/goten_wasted_ssj3_angry_bruised.jpg`,
-            name: 'Goten SSJ3 Angry',
-            type: 'jpg'
-        },
-        {
-            url: `${STATIC_BASE_URL}/assets/images/goten_ss_god_red_holding spirit bomb_looking curius.jpg`,
-            name: 'Goten SS God',
-            type: 'jpg'
-        },
-        {
-            url: `${STATIC_BASE_URL}/assets/images/goten_x_trunks_ssj1_playing.jpg`,
-            name: 'Goten and Trunks Playing',
-            type: 'jpg'
-        }
+        `${STATIC_BASE_URL}/goten/images/goten_standing.jpg`,
+        `${STATIC_BASE_URL}/goten/images/goten_happy_jumping.jpg`,
+        `${STATIC_BASE_URL}/goten/images/goten_happy_blushing_pause.jpg`,
+        `${STATIC_BASE_URL}/goten/images/goten_flying_happy.jpg`,
+        `${STATIC_BASE_URL}/goten/images/goten_arms_up.jpg`,
+        `${STATIC_BASE_URL}/goten/images/goten_neon.jpg`,
+        `${STATIC_BASE_URL}/goten/images/goten_adult_light.jpg`,
+        `${STATIC_BASE_URL}/goten/images/goten_and_trunks_ssj1_back_on_back_cheers.jpg`,
+        `${STATIC_BASE_URL}/goten/images/goten_x_trunks_ssj1_playing.jpg`,
+        `${STATIC_BASE_URL}/goten/images/goten_ssj1_bruised_sad.jpg`,
+        `${STATIC_BASE_URL}/goten/images/goten_wasted_ssj3_angry_bruised.jpg`,
+        `${STATIC_BASE_URL}/goten/images/goten_ss_god_red_holding spirit bomb_looking curius.jpg`
     ],
     sounds: [
-        {
-            url: `${STATIC_BASE_URL}/assets/sounds/welcome.mp3`,
-            name: 'Goten Welcome',
-            type: 'mp3'
-        },
-        {
-            url: `${STATIC_BASE_URL}/assets/sounds/goodmorning.mp3`,
-            name: 'Goten Good Morning',
-            type: 'mp3'
-        },
-        {
-            url: `${STATIC_BASE_URL}/assets/sounds/goodafternoon.mp3`,
-            name: 'Goten Good Afternoon',
-            type: 'mp3'
-        },
-        {
-            url: `${STATIC_BASE_URL}/assets/sounds/goodnight.mp3`,
-            name: 'Goten Good Night',
-            type: 'mp3'
-        },
-        {
-            url: `${STATIC_BASE_URL}/assets/sounds/help.mp3`,
-            name: 'Goten Help',
-            type: 'mp3'
-        },
-        {
-            url: `${STATIC_BASE_URL}/assets/sounds/thanks.mp3`,
-            name: 'Goten Thanks',
-            type: 'mp3'
-        },
-        {
-            url: `${STATIC_BASE_URL}/assets/sounds/sorry.mp3`,
-            name: 'Goten Sorry',
-            type: 'mp3'
-        },
-        {
-            url: `${STATIC_BASE_URL}/assets/sounds/joke.mp3`,
-            name: 'Goten Joke',
-            type: 'mp3'
-        },
-        {
-            url: `${STATIC_BASE_URL}/assets/sounds/shengmode.mp3`,
-            name: 'Goten Sheng Mode',
-            type: 'mp3'
-        },
-        {
-            url: `${STATIC_BASE_URL}/assets/sounds/aimode.mp3`,
-            name: 'Goten AI Mode',
-            type: 'mp3'
-        }
+        `${STATIC_BASE_URL}/goten/sounds/welcome.mp3`,
+        `${STATIC_BASE_URL}/goten/sounds/goodmorning.mp3`,
+        `${STATIC_BASE_URL}/goten/sounds/goodafternoon.mp3`,
+        `${STATIC_BASE_URL}/goten/sounds/goodnight.mp3`,
+        `${STATIC_BASE_URL}/goten/sounds/help.mp3`,
+        `${STATIC_BASE_URL}/goten/sounds/thanks.mp3`,
+        `${STATIC_BASE_URL}/goten/sounds/sorry.mp3`,
+        `${STATIC_BASE_URL}/goten/sounds/joke.mp3`,
+        `${STATIC_BASE_URL}/goten/sounds/shengmode.mp3`,
+        `${STATIC_BASE_URL}/goten/sounds/aimode.mp3`,
+        `${STATIC_BASE_URL}/goten/sounds/introduction.mp3`
     ]
 };
 
@@ -136,17 +54,17 @@ async function downloadGotenResources(message, zk) {
         // Download images
         for (const image of GOTEN_RESOURCES.images) {
             try {
-                const response = await axios.get(image.url, { responseType: 'arraybuffer' });
-                const fileName = `${image.name.toLowerCase().replace(/\s+/g, '_')}.${image.type}`;
+                const response = await axios.get(image, { responseType: 'arraybuffer' });
+                const fileName = image.split('/').pop().replace(/\s+/g, '_');
                 fs.writeFileSync(path.join(IMAGES_DIR, fileName), response.data);
                 downloadedCount++;
                 await zk.sendMessage(message.from, { 
-                    text: `✅ Downloaded: ${image.name} (${downloadedCount}/${totalResources})` 
+                    text: `✅ Downloaded: ${fileName} (${downloadedCount}/${totalResources})` 
                 });
             } catch (error) {
-                console.error(`Error downloading ${image.name}:`, error);
+                console.error(`Error downloading ${fileName}:`, error);
                 await zk.sendMessage(message.from, { 
-                    text: `❌ Failed to download: ${image.name}` 
+                    text: `❌ Failed to download: ${fileName}` 
                 });
             }
         }
@@ -154,17 +72,17 @@ async function downloadGotenResources(message, zk) {
         // Download sounds
         for (const sound of GOTEN_RESOURCES.sounds) {
             try {
-                const response = await axios.get(sound.url, { responseType: 'arraybuffer' });
-                const fileName = `${sound.name.toLowerCase().replace(/\s+/g, '_')}.${sound.type}`;
+                const response = await axios.get(sound, { responseType: 'arraybuffer' });
+                const fileName = sound.split('/').pop().replace(/\s+/g, '_');
                 fs.writeFileSync(path.join(SOUNDS_DIR, fileName), response.data);
                 downloadedCount++;
                 await zk.sendMessage(message.from, { 
-                    text: `✅ Downloaded: ${sound.name} (${downloadedCount}/${totalResources})` 
+                    text: `✅ Downloaded: ${fileName} (${downloadedCount}/${totalResources})` 
                 });
             } catch (error) {
-                console.error(`Error downloading ${sound.name}:`, error);
+                console.error(`Error downloading ${fileName}:`, error);
                 await zk.sendMessage(message.from, { 
-                    text: `❌ Failed to download: ${sound.name}` 
+                    text: `❌ Failed to download: ${fileName}` 
                 });
             }
         }
@@ -207,44 +125,49 @@ async function listGotenResources(message, zk) {
     }
 }
 
-async function sendGotenResource(message, zk, args) {
+async function sendGotenResource(zk, message, type, index) {
     try {
-        const [type, index] = args;
-        const dir = type === 'image' ? IMAGES_DIR : SOUNDS_DIR;
-        const files = fs.readdirSync(dir);
+        let dir, files, caption;
         
-        if (index > files.length || index < 1) {
-            await zk.sendMessage(message.from, { 
-                text: '❌ Invalid resource index. Use `goten list` to see available resources.' 
-            });
-            return;
+        if (type === 'image') {
+            dir = IMAGES_DIR;
+            files = fs.readdirSync(dir).filter(file => file.endsWith('.jpg') || file.endsWith('.jpeg') || file.endsWith('.png'));
+            caption = `📸 Goten Image ${index}/${files.length}`;
+        } else if (type === 'sound') {
+            dir = SOUNDS_DIR;
+            files = fs.readdirSync(dir).filter(file => file.endsWith('.mp3') || file.endsWith('.wav'));
+            caption = `🔊 Goten Sound ${index}/${files.length}`;
+        } else {
+            throw new Error('Invalid resource type. Use "image" or "sound"');
         }
-
+        
+        if (index < 1 || index > files.length) {
+            throw new Error(`Invalid index. Should be between 1 and ${files.length}`);
+        }
+        
         const filePath = path.join(dir, files[index - 1]);
-        const fileBuffer = fs.readFileSync(filePath);
-        const fileName = files[index - 1].split('.')[0].replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-        const fileExt = files[index - 1].split('.').pop().toLowerCase();
-
+        const fileData = fs.readFileSync(filePath);
+        
         if (type === 'image') {
             await zk.sendMessage(message.from, { 
-                image: fileBuffer,
-                caption: `*${fileName}*`
+                image: fileData,
+                caption: caption
             });
-        } else {
-            // Determine correct mimetype based on file extension
+        } else { // sound
+            const fileExt = files[index - 1].split('.').pop().toLowerCase();
             const mimetype = fileExt === 'mp3' ? 'audio/mp3' : 'audio/wav';
             
             await zk.sendMessage(message.from, { 
-                audio: fileBuffer, 
+                audio: fileData, 
                 mimetype: mimetype,
-                caption: `*${fileName}*`
+                ptt: true // play as voice note
             });
         }
+        
+        return { success: true };
     } catch (error) {
         console.error('Error sending Goten resource:', error);
-        await zk.sendMessage(message.from, { 
-            text: '❌ Error sending resource. Please try again later.' 
-        });
+        throw error;
     }
 }
 
@@ -260,7 +183,7 @@ async function execute(message, zk, options) {
             await listGotenResources(message, zk);
             break;
         case 'send':
-            await sendGotenResource(message, zk, args.slice(1));
+            await sendGotenResource(zk, message, args[1], parseInt(args[2]));
             break;
         default:
             await zk.sendMessage(message.from, {
