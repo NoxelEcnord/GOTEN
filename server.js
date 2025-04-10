@@ -45,6 +45,9 @@ async function cleanupOldSessions(sessionDir) {
     }
 }
 
+// Function to delay execution
+const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+
 // Route to generate session
 app.post('/generate-session', async (req, res) => {
     try {
@@ -55,18 +58,16 @@ app.post('/generate-session', async (req, res) => {
 
         const sessionDir = await ensureSessionDirectory();
         await cleanupOldSessions(sessionDir);
-
+        
         const { state, saveCreds } = await useMultiFileAuthState(sessionDir);
-        const { version } = await fetchLatestBaileysVersion();
+        const { version, isLatest } = await fetchLatestBaileysVersion();
+        console.log(`Using WA v${version.join('.')}, isLatest: ${isLatest}`);
 
         const sock = makeWASocket({
             version,
             printQRInTerminal: false,
-            auth: {
-                creds: state.creds,
-                keys: makeCacheableSignalKeyStore(state.keys, pino({ level: 'silent' }))
-            },
-            browser: ["GOTEN Bot", "Chrome", "1.0.0"],
+            auth: state,
+            browser: ["Chrome (Linux)", "Chrome", "106.0.5249.126"],
             logger: pino({ level: 'silent' }),
             mobile: false
         });
@@ -74,14 +75,25 @@ app.post('/generate-session', async (req, res) => {
         const sessionId = Date.now().toString();
         activeSessions.set(sessionId, { sock, state, saveCreds });
 
-        // Generate pairing code
-        const pairingCode = await sock.generatePairingCode(phoneNumber);
-        
-        res.json({ 
-            success: true, 
-            sessionId,
-            pairingCode 
-        });
+        // Wait for socket to be ready
+        await delay(5000);
+
+        // Request pairing code
+        try {
+            console.log('Requesting pairing code...');
+            const cleanPhone = phoneNumber.replace(/[^0-9]/g, '');
+            const pairingCode = await sock.requestPairingCode(cleanPhone);
+            console.log('Pairing code generated:', pairingCode);
+            
+            res.json({ 
+                success: true, 
+                sessionId,
+                pairingCode 
+            });
+        } catch (error) {
+            console.error('Error requesting pairing code:', error);
+            throw error;
+        }
 
         // Handle connection updates
         sock.ev.on('connection.update', async (update) => {
