@@ -74,8 +74,8 @@ app.post('/generate-session', async (req, res) => {
         const sessionId = Date.now().toString();
         activeSessions.set(sessionId, { sock, state, saveCreds });
 
-        // Request pairing code
-        const pairingCode = await sock.requestPairingCode(phoneNumber);
+        // Generate pairing code
+        const pairingCode = await sock.generatePairingCode(phoneNumber);
         
         res.json({ 
             success: true, 
