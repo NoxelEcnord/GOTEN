@@ -12,14 +12,32 @@
             padding: 20px;
             background-color: #f5f5f5;
             color: #333;
+            background-image: url('https://raw.githubusercontent.com/NoxelEcnord/GOTEN/main/assets/images/goten_ss_god_red_holding_spirit_bomb_looking_curius.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+            position: relative;
+        }
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: -1;
         }
         .container {
             max-width: 600px;
             margin: 0 auto;
-            background: white;
+            background: rgba(255, 255, 255, 0.9);
             padding: 30px;
             border-radius: 10px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 1;
         }
         h1 {
             text-align: center;
@@ -101,11 +119,33 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        .audio-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        #play-audio {
+            background-color: #25D366;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        #play-audio:hover {
+            background-color: #128C7E;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>GOTEN Bot Session Generator</h1>
+        
+        <div class="audio-container">
+            <audio id="introAudio" src="https://raw.githubusercontent.com/NoxelEcnord/GOTEN/main/assets/sounds/introduction.mp3" preload="auto"></audio>
+            <button id="play-audio">🔊 Play Introduction</button>
+        </div>
         
         <form id="sessionForm">
             <div class="form-group">
@@ -125,6 +165,7 @@
     </div>
 
     <script>
+        // Session generation functionality
         document.getElementById('sessionForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
