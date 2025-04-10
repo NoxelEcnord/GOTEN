@@ -110,7 +110,7 @@ heroku ps:scale web=1
 
 Before deploying to Heroku, you need to generate and encrypt a session ID:
 
-1. Visit the [GOTEN Bot website](https://gotens.onrender.com/) to generate your session ID
+1. Visit the [GOTEN Bot GitHub repository](https://github.com/CN7ZHN/normalbot/tree/main/GOTEN) to get started
 2. Use the encrypted session ID when deploying
 
 ## 🤖 Bot Commands

@@ -13,36 +13,36 @@ if (!fs.existsSync(IMAGES_DIR)) fs.mkdirSync(IMAGES_DIR);
 if (!fs.existsSync(SOUNDS_DIR)) fs.mkdirSync(SOUNDS_DIR);
 
 // Get base URL from Render.com static site
-const STATIC_BASE_URL = 'https://gotens.onrender.com';
+const STATIC_BASE_URL = process.env.STATIC_BASE_URL || 'https://raw.githubusercontent.com/CN7ZHN/normalbot/main/GOTEN';
 
 // Goten resource URLs
 const GOTEN_RESOURCES = {
     images: [
-        `${STATIC_BASE_URL}/goten/images/goten_standing.jpg`,
-        `${STATIC_BASE_URL}/goten/images/goten_happy_jumping.jpg`,
-        `${STATIC_BASE_URL}/goten/images/goten_happy_blushing_pause.jpg`,
-        `${STATIC_BASE_URL}/goten/images/goten_flying_happy.jpg`,
-        `${STATIC_BASE_URL}/goten/images/goten_arms_up.jpg`,
-        `${STATIC_BASE_URL}/goten/images/goten_neon.jpg`,
-        `${STATIC_BASE_URL}/goten/images/goten_adult_light.jpg`,
-        `${STATIC_BASE_URL}/goten/images/goten_and_trunks_ssj1_back_on_back_cheers.jpg`,
-        `${STATIC_BASE_URL}/goten/images/goten_x_trunks_ssj1_playing.jpg`,
-        `${STATIC_BASE_URL}/goten/images/goten_ssj1_bruised_sad.jpg`,
-        `${STATIC_BASE_URL}/goten/images/goten_wasted_ssj3_angry_bruised.jpg`,
-        `${STATIC_BASE_URL}/goten/images/goten_ss_god_red_holding spirit bomb_looking curius.jpg`
+        'https://raw.githubusercontent.com/CN7ZHN/normalbot/main/GOTEN/assets/images/goten_standing.jpg',
+        'https://raw.githubusercontent.com/CN7ZHN/normalbot/main/GOTEN/assets/images/goten_happy_jumping.jpg',
+        'https://raw.githubusercontent.com/CN7ZHN/normalbot/main/GOTEN/assets/images/goten_happy_blushing_pause.jpg',
+        'https://raw.githubusercontent.com/CN7ZHN/normalbot/main/GOTEN/assets/images/goten_flying_happy.jpg',
+        'https://raw.githubusercontent.com/CN7ZHN/normalbot/main/GOTEN/assets/images/goten_arms_up.jpg',
+        'https://raw.githubusercontent.com/CN7ZHN/normalbot/main/GOTEN/assets/images/goten_neon.jpg',
+        'https://raw.githubusercontent.com/CN7ZHN/normalbot/main/GOTEN/assets/images/goten_adult_light.jpg',
+        'https://raw.githubusercontent.com/CN7ZHN/normalbot/main/GOTEN/assets/images/goten_and_trunks_ssj1_back_on_back_cheers.jpg',
+        'https://raw.githubusercontent.com/CN7ZHN/normalbot/main/GOTEN/assets/images/goten_x_trunks_ssj1_playing.jpg',
+        'https://raw.githubusercontent.com/CN7ZHN/normalbot/main/GOTEN/assets/images/goten_ssj1_bruised_sad.jpg',
+        'https://raw.githubusercontent.com/CN7ZHN/normalbot/main/GOTEN/assets/images/goten_wasted_ssj3_angry_bruised.jpg',
+        'https://raw.githubusercontent.com/CN7ZHN/normalbot/main/GOTEN/assets/images/goten_ss_god_red_holding_spirit_bomb_looking_curius.jpg'
     ],
     sounds: [
-        `${STATIC_BASE_URL}/goten/sounds/welcome.mp3`,
-        `${STATIC_BASE_URL}/goten/sounds/goodmorning.mp3`,
-        `${STATIC_BASE_URL}/goten/sounds/goodafternoon.mp3`,
-        `${STATIC_BASE_URL}/goten/sounds/goodnight.mp3`,
-        `${STATIC_BASE_URL}/goten/sounds/help.mp3`,
-        `${STATIC_BASE_URL}/goten/sounds/thanks.mp3`,
-        `${STATIC_BASE_URL}/goten/sounds/sorry.mp3`,
-        `${STATIC_BASE_URL}/goten/sounds/joke.mp3`,
-        `${STATIC_BASE_URL}/goten/sounds/shengmode.mp3`,
-        `${STATIC_BASE_URL}/goten/sounds/aimode.mp3`,
-        `${STATIC_BASE_URL}/goten/sounds/introduction.mp3`
+        'https://raw.githubusercontent.com/CN7ZHN/normalbot/main/GOTEN/assets/sounds/welcome.mp3',
+        'https://raw.githubusercontent.com/CN7ZHN/normalbot/main/GOTEN/assets/sounds/goodmorning.mp3',
+        'https://raw.githubusercontent.com/CN7ZHN/normalbot/main/GOTEN/assets/sounds/goodafternoon.mp3',
+        'https://raw.githubusercontent.com/CN7ZHN/normalbot/main/GOTEN/assets/sounds/goodnight.mp3',
+        'https://raw.githubusercontent.com/CN7ZHN/normalbot/main/GOTEN/assets/sounds/help.mp3',
+        'https://raw.githubusercontent.com/CN7ZHN/normalbot/main/GOTEN/assets/sounds/thanks.mp3',
+        'https://raw.githubusercontent.com/CN7ZHN/normalbot/main/GOTEN/assets/sounds/sorry.mp3',
+        'https://raw.githubusercontent.com/CN7ZHN/normalbot/main/GOTEN/assets/sounds/joke.mp3',
+        'https://raw.githubusercontent.com/CN7ZHN/normalbot/main/GOTEN/assets/sounds/shengmode.mp3',
+        'https://raw.githubusercontent.com/CN7ZHN/normalbot/main/GOTEN/assets/sounds/aimode.mp3',
+        'https://raw.githubusercontent.com/CN7ZHN/normalbot/main/GOTEN/assets/sounds/introduction.mp3'
     ]
 };
 

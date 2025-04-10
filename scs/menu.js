@@ -1,24 +1,24 @@
 const config = require('../config.env');
 
 // Available Goten images for menus
-const GOTEN_IMAGES = [
-    'https://gotens.onrender.com/assets/images/goten_standing.jpg',
-    'https://gotens.onrender.com/assets/images/goten_happy_jumping.jpg',
-    'https://gotens.onrender.com/assets/images/goten_flying_happy.jpg',
-    'https://gotens.onrender.com/assets/images/goten_arms_up.jpg',
-    'https://gotens.onrender.com/assets/images/goten_adult_light.jpg',
-    'https://gotens.onrender.com/assets/images/goten_neon.jpg',
-    'https://gotens.onrender.com/assets/images/goten_happy_blushing_pause.jpg',
-    'https://gotens.onrender.com/assets/images/goten_and_trunks_ssj1_back_on_back_cheers.jpg',
-    'https://gotens.onrender.com/assets/images/goten_ssj1_bruised_sad.jpg',
-    'https://gotens.onrender.com/assets/images/goten_wasted_ssj3_angry_bruised.jpg',
-    'https://gotens.onrender.com/assets/images/goten_ss_god_red_holding_spirit_bomb_looking_curius.jpg',
-    'https://gotens.onrender.com/assets/images/goten_x_trunks_ssj1_playing.jpg'
+const menuImages = [
+    'https://raw.githubusercontent.com/CN7ZHN/normalbot/main/GOTEN/assets/images/goten_standing.jpg',
+    'https://raw.githubusercontent.com/CN7ZHN/normalbot/main/GOTEN/assets/images/goten_happy_jumping.jpg',
+    'https://raw.githubusercontent.com/CN7ZHN/normalbot/main/GOTEN/assets/images/goten_flying_happy.jpg',
+    'https://raw.githubusercontent.com/CN7ZHN/normalbot/main/GOTEN/assets/images/goten_arms_up.jpg',
+    'https://raw.githubusercontent.com/CN7ZHN/normalbot/main/GOTEN/assets/images/goten_adult_light.jpg',
+    'https://raw.githubusercontent.com/CN7ZHN/normalbot/main/GOTEN/assets/images/goten_neon.jpg',
+    'https://raw.githubusercontent.com/CN7ZHN/normalbot/main/GOTEN/assets/images/goten_happy_blushing_pause.jpg',
+    'https://raw.githubusercontent.com/CN7ZHN/normalbot/main/GOTEN/assets/images/goten_and_trunks_ssj1_back_on_back_cheers.jpg',
+    'https://raw.githubusercontent.com/CN7ZHN/normalbot/main/GOTEN/assets/images/goten_ssj1_bruised_sad.jpg',
+    'https://raw.githubusercontent.com/CN7ZHN/normalbot/main/GOTEN/assets/images/goten_wasted_ssj3_angry_bruised.jpg',
+    'https://raw.githubusercontent.com/CN7ZHN/normalbot/main/GOTEN/assets/images/goten_ss_god_red_holding_spirit_bomb_looking_curius.jpg',
+    'https://raw.githubusercontent.com/CN7ZHN/normalbot/main/GOTEN/assets/images/goten_x_trunks_ssj1_playing.jpg'
 ];
 
 // Function to get random menu image
 function getRandomMenuImage() {
-    return GOTEN_IMAGES[Math.floor(Math.random() * GOTEN_IMAGES.length)];
+    return menuImages[Math.floor(Math.random() * menuImages.length)];
 }
 
 // Menu formats with modern ASCII art
