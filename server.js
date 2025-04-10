@@ -149,6 +149,70 @@ app.post('/check-session-status', (req, res) => {
     });
 });
 
+// Route to get pairing code
+app.get('/code', async (req, res) => {
+    try {
+        const { number } = req.query;
+        if (!number) {
+            return res.status(400).json({ error: 'Phone number is required' });
+        }
+
+        const sessionDir = await ensureSessionDirectory();
+        await cleanupOldSessions(sessionDir);
+        
+        const { state, saveCreds } = await useMultiFileAuthState(sessionDir);
+        const { version } = await fetchLatestBaileysVersion();
+
+        const sock = makeWASocket({
+            version,
+            printQRInTerminal: false,
+            auth: state,
+            browser: ["Chrome (Linux)", "Chrome", "106.0.5249.126"],
+            logger: pino({ level: 'silent' }),
+            mobile: false
+        });
+
+        // Wait for socket to be ready
+        await delay(5000);
+
+        // Request pairing code
+        const cleanPhone = number.replace(/[^0-9]/g, '');
+        const pairingCode = await sock.requestPairingCode(cleanPhone);
+        
+        res.json({ code: pairingCode });
+
+        // Handle connection updates
+        sock.ev.on('connection.update', async (update) => {
+            const { connection, lastDisconnect } = update;
+            
+            if (connection === 'close') {
+                const statusCode = lastDisconnect?.error?.output?.statusCode;
+                if (statusCode === DisconnectReason.loggedOut) {
+                    console.log('Session logged out');
+                }
+            } else if (connection === 'open') {
+                const sessionId = state.creds.me?.id;
+                if (sessionId) {
+                    // Save session data
+                    const sessionFile = path.join(sessionDir, 'creds.json');
+                    fs.writeFileSync(sessionFile, JSON.stringify(state.creds, null, 2));
+                    fs.writeFileSync('session_id.txt', sessionId);
+                    
+                    // Send session ID via WhatsApp
+                    await sock.sendMessage(cleanPhone, { 
+                        text: `Your GOTEN Bot Session ID: ${sessionId}\n\nSave this ID for future use.` 
+                    });
+                }
+            }
+        });
+
+        sock.ev.on('creds.update', saveCreds);
+    } catch (error) {
+        console.error('Error generating pairing code:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
 // Root route
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));

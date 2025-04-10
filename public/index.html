@@ -4,21 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GOTEN Bot Session Generator</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         body {
-            font-family: 'Inter', sans-serif;
             margin: 0;
-            padding: 20px;
-            background-color: #f5f5f5;
-            color: #333;
-            background-image: url('https://raw.githubusercontent.com/NoxelEcnord/GOTEN/main/assets/images/goten_ss_god_red_holding_spirit_bomb_looking_curius.jpg');
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-image: url('https://raw.githubusercontent.com/NoxelEcnord/GOTEN/main/goten/images/goten_ss_god_red_holding_spirit_bomb_looking_curius.jpg');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
-            min-height: 100vh;
-            position: relative;
         }
+
         body::before {
             content: '';
             position: absolute;
@@ -29,224 +31,177 @@
             background: rgba(0, 0, 0, 0.7);
             z-index: -1;
         }
+
         .container {
-            max-width: 600px;
-            margin: 0 auto;
-            background: rgba(255, 255, 255, 0.9);
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            position: relative;
-            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #333;
         }
-        h1 {
+
+        .box {
+            width: 330px;
+            height: 360px;
+            padding: 20px;
             text-align: center;
-            color: #25D366;
-            margin-bottom: 30px;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 12px;
+            box-shadow: 0 0 40px rgba(255, 0, 0, 0.7);
+            opacity: 0;
+            animation: fadeIn 1s forwards;
         }
-        .form-group {
-            margin-bottom: 20px;
+
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
         }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 500;
-        }
-        input {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-        button {
-            width: 100%;
-            padding: 12px;
-            background-color: #25D366;
+
+        .centered-text {
+            text-align: center;
             color: white;
+        }
+
+        .input-container {
+            display: flex;
+            margin-top: 10px;
+            background: linear-gradient(45deg, #ff0000 0%, #ff4500 100%);
+            border-radius: 50px;
+            padding: 0.5rem;
+            width: 100%;
+            max-width: 300px;
+            transition: all 0.3s ease;
+        }
+
+        .input-container input {
+            border-radius: 50px;
             border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background-color 0.3s;
+            padding: 0.8rem 1rem;
+            width: 70%;
+            transition: all 0.3s ease;
+            font-size: 1rem;
         }
-        button:hover {
-            background-color: #128C7E;
+
+        .input-container input:focus {
+            outline: none;
+            box-shadow: 0 0 8px rgba(255, 0, 0, 0.7);
         }
-        button:disabled {
-            background-color: #ccc;
-            cursor: not-allowed;
-        }
-        .pairing-code {
-            margin-top: 20px;
-            padding: 15px;
-            background-color: #f8f9fa;
-            border-radius: 5px;
-            text-align: center;
-            font-size: 24px;
+
+        .input-container button {
+            border: none;
+            border-radius: 50px;
+            padding: 1rem;
+            background: linear-gradient(135deg, #ff4500 0%, #ff0000 100%);
+            color: white;
             font-weight: bold;
-            letter-spacing: 2px;
-        }
-        .status {
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 5px;
-            text-align: center;
-        }
-        .status.success {
-            background-color: #d4edda;
-            color: #155724;
-        }
-        .status.error {
-            background-color: #f8d7da;
-            color: #721c24;
-        }
-        .loading {
-            text-align: center;
-            margin: 20px 0;
-        }
-        .loading::after {
-            content: '';
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #25D366;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        .audio-container {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        #play-audio {
-            background-color: #25D366;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
+            width: 30%;
             cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s;
+            transition: background 0.3s ease, transform 0.2s ease;
         }
-        #play-audio:hover {
-            background-color: #128C7E;
+
+        .input-container button:hover {
+            background: linear-gradient(135deg, #ff0000 0%, #ff4500 100%);
+            transform: scale(1.05);
+        }
+
+        #waiting-message {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            color: white;
+            opacity: 0;
+            animation: fadeIn 1.5s forwards;
+        }
+
+        .bot {
+            margin-top: 20px;
+            text-align: center;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 15px;
+            border-radius: 12px;
+            color: yellow;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.7);
+            transition: all 0.3s ease;
+        }
+
+        h3, h6 {
+            margin: 0.5rem 0;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>GOTEN Bot Session Generator</h1>
-        
-        <div class="audio-container">
-            <audio id="introAudio" src="https://raw.githubusercontent.com/NoxelEcnord/GOTEN/main/goten/sounds/introduction.mp3" preload="auto"></audio>
-            <button id="play-audio">🔊 Play Introduction</button>
-        </div>
-        
-        <form id="sessionForm">
-            <div class="form-group">
-                <label for="phone">WhatsApp Number (with country code)</label>
-                <input type="tel" id="phone" name="phone" placeholder="e.g., 1234567890" required
-                       pattern="[0-9]{10,15}" title="Please enter 10-15 digits">
+        <div class="box" id="box">
+            <h3 class="centered-text">GOTEN BOT SESSION SCANNER</h3>
+            <h6 class="centered-text">Enter Your WhatsApp Number With Country Code Without (+)</h6>
+            <h6 class="centered-text">GOTEN-MD</h6>
+
+            <div class="input-container">
+                <input placeholder="Eg 254xxxxxx" type="number" id="number" name="number">
+                <button id="submit">Enter</button>
             </div>
-            
-            <button type="submit" id="generateBtn">Generate Session</button>
-        </form>
-        
-        <div id="loading" class="loading" style="display: none;"></div>
-        
-        <div id="pairingCode" class="pairing-code" style="display: none;"></div>
-        
-        <div id="status" class="status" style="display: none;"></div>
+
+            <a id="waiting-message" class="centered-text" style="display: none;">Getting Code...</a>
+            <br><br>
+            <main id="pair"></main>
+        </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.0.0-alpha.1/axios.min.js"></script>
     <script>
-        // Session generation functionality
-        document.getElementById('sessionForm').addEventListener('submit', async (e) => {
+        let a = document.getElementById("pair");
+        let b = document.getElementById("submit");
+        let c = document.getElementById("number");
+        let box = document.getElementById("box");
+
+        async function Copy() {
+            let text = document.getElementById("copy").innerText;
+            let obj = document.getElementById("copy");
+            await navigator.clipboard.writeText(obj.innerText.replace('YOUR CODE: ', ''));
+            obj.innerText = "COPIED";
+            obj.style = "color: black; font-weight: bold";
+            obj.size = "5";
+            setTimeout(() => {
+                obj.innerText = text;
+                obj.style = "color: white; font-weight: bold";
+                obj.size = "5";
+            }, 500);
+        }
+
+        b.addEventListener("click", async (e) => {
             e.preventDefault();
-            
-            const phone = document.getElementById('phone').value;
-            const generateBtn = document.getElementById('generateBtn');
-            const loading = document.getElementById('loading');
-            const pairingCode = document.getElementById('pairingCode');
-            const status = document.getElementById('status');
-            
-            // Reset UI
-            generateBtn.disabled = true;
-            loading.style.display = 'block';
-            pairingCode.style.display = 'none';
-            status.style.display = 'none';
-            
-            try {
-                const response = await fetch('/generate-session', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ phoneNumber: phone })
+            if (!c.value) {
+                a.innerHTML = '<a style="color: white; font-weight: bold;">Enter Your WhatsApp Number With Country Code Without (+)</a><br><br>';
+            } else if (c.value.replace(/[^0-9]/g, "").length < 11) {
+                a.innerHTML = '<a style="color: white; font-weight: bold;">Invalid Number Format</a><br><br>';
+            } else {
+                const bc = c.value.replace(/[^0-9]/g, "");
+                let bb = "";
+                let bbc = "";
+                const cc = bc.split('');
+                cc.map(a => {
+                    bbc += a;
+                    if (bbc.length == 3) {
+                        bb += " " + a;
+                    } else if (bbc.length == 8) {
+                        bb += " " + a;
+                    } else {
+                        bb += a;
+                    }
                 });
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    // Show pairing code
-                    pairingCode.textContent = data.pairingCode;
-                    pairingCode.style.display = 'block';
-                    
-                    // Start polling for status
-                    pollSessionStatus(data.sessionId);
-                } else {
-                    throw new Error(data.error || 'Failed to generate session');
+                c.type = "text";
+                c.value = "+" + bb;
+                c.style = "color: black; font-size: 20px";
+                a.innerHTML = '<a style="color: white; font-weight: bold;">Generating Code...</a><br><br>';
+                try {
+                    let { data } = await axios(`/code?number=${bc}`);
+                    let code = data.code || "Service is Currently Unavailable";
+                    a.innerHTML = '<font id="copy" onclick="Copy()" style="color: red; font-weight: bold;" size="5">YOUR CODE: <span style="color: yellow; font-weight: bold;">' + code + '</span></font><br><br><br>';
+                } catch (error) {
+                    a.innerHTML = '<a style="color: white; font-weight: bold;">Error generating code. Please try again.</a><br><br>';
                 }
-            } catch (error) {
-                status.textContent = `Error: ${error.message}`;
-                status.className = 'status error';
-                status.style.display = 'block';
-            } finally {
-                loading.style.display = 'none';
-                generateBtn.disabled = false;
             }
         });
-
-        async function pollSessionStatus(sessionId) {
-            const status = document.getElementById('status');
-            const pairingCode = document.getElementById('pairingCode');
-            
-            try {
-                const response = await fetch('/check-session-status', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ sessionId })
-                });
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    if (data.connected) {
-                        status.textContent = 'Successfully connected! Check your WhatsApp for the session ID.';
-                        status.className = 'status success';
-                        status.style.display = 'block';
-                        pairingCode.style.display = 'none';
-                    } else {
-                        // Continue polling
-                        setTimeout(() => pollSessionStatus(sessionId), 3000);
-                    }
-                } else {
-                    throw new Error(data.error || 'Failed to check session status');
-                }
-            } catch (error) {
-                status.textContent = `Error checking connection status: ${error.message}`;
-                status.className = 'status error';
-                status.style.display = 'block';
-                pairingCode.style.display = 'none';
-            }
-        }
     </script>
 </body>
 </html> 
